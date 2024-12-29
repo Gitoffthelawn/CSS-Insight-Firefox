@@ -1,0 +1,45 @@
+{
+  "manifest_version": 3,
+  "name": "__MSG_chromename__",
+  "short_name": "__MSG_shortname__",
+  "description": "__MSG_description__",
+  "version": "1.6.5",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "{3cf44542-4a82-4868-a366-be8126b42457}",
+      "strict_min_version": "113.0"
+    },
+    "gecko_android": {
+      "id": "{3cf44542-4a82-4868-a366-be8126b42457}",
+      "strict_min_version": "120.0"
+    }
+  },
+  "author": "MarkAlexI",
+  "icons": {
+    "16": "images/icon-16.png",
+    "32": "images/icon-32.png",
+    "192": "images/icon-192.png",
+    "512": "images/icon-512.png"
+  },
+  "default_locale": "en",
+  "permissions": [
+    "storage",
+    "scripting",
+    "activeTab",
+    "tabs"
+  ],
+  "host_permissions": ["*://*/"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "__MSG_defaulttitle__"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": [
+        "scripts/formatRule.js",
+        "scripts/getTagName.js"
+      ]
+    }
+  ]
+}
