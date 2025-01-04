@@ -11,6 +11,7 @@ function createTooltip() {
   tooltip.style.borderRadius = '3px';
   tooltip.style.pointerEvents = 'none';
   tooltip.style.display = 'none';
+  tooltip.style.zIndex = '9999';
   document.body.appendChild(tooltip);
 }
 

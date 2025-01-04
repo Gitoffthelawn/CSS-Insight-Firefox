@@ -26,9 +26,9 @@ function showModalWithCSSData(cssData) {
   const textArea = document.createElement('textarea');
   textArea.style.color = 'rgb(255, 0, 255)';
   textArea.style.textShadow = 'rgba(0, 255, 0, 0.25) 2px 2px 4px';
-  textArea.style.width = '95%';
+  textArea.style.width = '97%';
   textArea.style.maxWidth = '380px';
-  textArea.style.height = '88%';
+  textArea.style.height = '89%';
   textArea.style.maxHeight = '800px';
   textArea.textContent = cssData;
 
