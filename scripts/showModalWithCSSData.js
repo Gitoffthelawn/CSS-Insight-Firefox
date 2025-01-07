@@ -11,7 +11,7 @@ function showModalWithCSSData(cssData) {
   modal.style.display = 'flex';
   modal.style.justifyContent = 'center';
   modal.style.alignItems = 'center';
-  modal.style.zIndex = '9999';
+  modal.style.zIndex = '99999';
 
   const modalContent = document.createElement('div');
   modalContent.style.backgroundColor = 'white';
@@ -26,7 +26,7 @@ function showModalWithCSSData(cssData) {
   const textArea = document.createElement('textarea');
   textArea.style.color = 'rgb(255, 0, 255)';
   textArea.style.textShadow = 'rgba(0, 255, 0, 0.25) 2px 2px 4px';
-  textArea.style.width = '97%';
+  textArea.style.width = '98%';
   textArea.style.maxWidth = '380px';
   textArea.style.height = '89%';
   textArea.style.maxHeight = '800px';

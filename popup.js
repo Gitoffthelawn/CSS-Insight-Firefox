@@ -83,7 +83,9 @@ document.getElementById('moreDetailsBtn').addEventListener('click', () => {
 });
 
 document.getElementById('applyRuleBtn').addEventListener('click', () => {
-  document.getElementById('newRule').classList.remove('hidden');
+  setTimeout(function() {
+    document.getElementById('newRule').classList.remove('hidden');
+  }, 0);
 });
 
 document.getElementById('injectCSSBtn').addEventListener('click', () => {
