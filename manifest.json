@@ -3,11 +3,15 @@
   "name": "__MSG_chromename__",
   "short_name": "__MSG_shortname__",
   "description": "__MSG_description__",
-  "version": "1.6.6",
+  "version": "1.7.6",
   "browser_specific_settings": {
     "gecko": {
       "id": "{3cf44542-4a82-4868-a366-be8126b42458}",
       "strict_min_version": "113.0"
+    },
+    "gecko_android": {
+      "id": "{3cf44542-4a82-4868-a366-be8126b42458}",
+      "strict_min_version": "120.0"
     }
   },
   "author": "MarkAlexI",
