@@ -10,7 +10,7 @@ function getDeclaredStyles(selector = 'body') {
       const rules = sheet.cssRules || sheet.rules;
 
       for (const rule of rules) {
-        if (selector == '' || rule.selectorText === selector) {
+        if (selector == '' || rule.selectorText?.includes(selector)) {
           result += formatRule(rule) + '\n\n';
         }
       }
