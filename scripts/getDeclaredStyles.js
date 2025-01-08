@@ -1,6 +1,7 @@
 function getDeclaredStyles(selector = 'body') {
   const NO_RULES = browser.i18n.getMessage('norules');
   const WAS_ERROR = browser.i18n.getMessage('waserror');
+  const FOUND = browser.i18n.getMessage('found');
   const stylesheets = document.styleSheets;
   let result = '';
 
@@ -19,7 +20,9 @@ function getDeclaredStyles(selector = 'body') {
     }
   }
 
-  return result ? result.trim() : `${NO_RULES} "${selector}"`;
+  return result ?
+           `${FOUND} "${selector}": \n\n${result.trim()}` :
+           `${NO_RULES} "${selector}"`;
 }
 
 getDeclaredStyles(data);
