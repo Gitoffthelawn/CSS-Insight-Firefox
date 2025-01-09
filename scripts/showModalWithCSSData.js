@@ -46,7 +46,7 @@ function showModalWithCSSData(cssData) {
   closeButton.addEventListener('click', () => {
     modal.remove();
   });
-  
+
   const copyButton = document.createElement('button');
   copyButton.textContent = COPY;
   copyButton.style.marginTop = '10px';
@@ -59,7 +59,10 @@ function showModalWithCSSData(cssData) {
 
   copyButton.addEventListener('click', () => {
     navigator.clipboard.writeText(cssData).then(() => {
-      alert(COPIED);
+      document.getElementById('copyBtn').textContent = COPIED;
+      setTimeout(() => {
+        document.getElementById('copyBtn').textContent = COPY;
+      }, 3000);
     });
   });
 
