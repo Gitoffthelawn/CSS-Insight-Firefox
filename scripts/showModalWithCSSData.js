@@ -57,11 +57,11 @@ function showModalWithCSSData(cssData) {
   copyButton.style.border = 'none';
   copyButton.style.cursor = 'pointer';
 
-  copyButton.addEventListener('click', () => {
+  copyButton.addEventListener('click', function() {
     navigator.clipboard.writeText(cssData).then(() => {
-      document.getElementById('copyBtn').textContent = COPIED;
+      this.textContent = COPIED;
       setTimeout(() => {
-        document.getElementById('copyBtn').textContent = COPY;
+        this.textContent = COPY;
       }, 3000);
     });
   });
