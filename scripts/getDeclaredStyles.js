@@ -10,7 +10,7 @@ function getDeclaredStyles(selector = 'body') {
       const rules = sheet.cssRules || sheet.rules;
 
       for (const rule of rules) {
-        if (selector == '' || rule.selectorText?.includes(selector)) {
+        if (rule.selectorText?.includes(selector.toLowerCase().trim())) {
           result += formatRule(rule) + '\n\n';
         }
       }
@@ -20,8 +20,8 @@ function getDeclaredStyles(selector = 'body') {
     }
   }
 
-  return result ?
-           `${FOUND} "${selector}": \n\n${result.trim()}` :
+  return result.length ?
+           `${FOUND} "${selector}": \n\n${result}` :
            `${NO_RULES} "${selector}"`;
 }
 
