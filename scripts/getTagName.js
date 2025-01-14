@@ -1,4 +1,11 @@
-let tooltip;
+let tooltip, tagInfo;
+
+function copyTagName(event) {
+  event.preventDefault();
+  browser.storage.sync.set({ 'tagInfo': tagInfo }, () => {
+    console.log('Tag info updated:', tagInfo);
+  });
+}
 
 function createTooltip() {
   tooltip = document.createElement('div');
@@ -27,9 +34,11 @@ function onMouseMove(event) {
 
   if (elementUnderCursor) {
     const tagName = elementUnderCursor.tagName.toLowerCase();
-    const className = elementUnderCursor.className ? `.${elementUnderCursor.className}` : '';
-    const id = elementUnderCursor.id ? `#${elementUnderCursor.id}` : '';
-    const info = `Tag: ${tagName}${id}${className}`;
+    const className = elementUnderCursor.className ? ` .${elementUnderCursor.className}` : '';
+    const id = elementUnderCursor.id ? ` #${elementUnderCursor.id}` : '';
+    tagInfo = `${tagName}${id}${className}`;
+
+    const info = `Tag: ${tagInfo}`;
 
     tooltip.textContent = info;
     tooltip.style.display = 'block';
@@ -51,9 +60,11 @@ browser.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if (!tooltip) createTooltip();
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseleave', onMouseLeave);
+    document.addEventListener('click', copyTagName, { passive: false });
   } else if (request.action === 'stop') {
     document.removeEventListener('mousemove', onMouseMove);
     document.removeEventListener('mouseleave', onMouseLeave);
+    document.removeEventListener('click', copyTagName);
     removeTooltip();
   }
 });
