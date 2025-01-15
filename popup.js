@@ -1,5 +1,6 @@
 import { executeScript } from './scripts/common.js';
 import { displayStyles } from './scripts/displayStyles.js';
+import { formatTagName } from './scripts/formatTagName.js';
 
 const COPY = browser.i18n.getMessage('copytext');
 const COPIED = browser.i18n.getMessage('copied');
@@ -120,7 +121,9 @@ const tagInput = document.getElementById('tagInput');
 
 browser.storage.sync.get(['isTracking', 'tagInfo'], function(result) {
   trackTagBtn.textContent = result.isTracking ? STOP : START;
-  tagInput.value = result.tagInfo || '';
+  tagInput.value = result.tagInfo ?
+    formatTagName(result.tagInfo) :
+    '';
 });
 
 trackTagBtn.addEventListener('click', function() {
@@ -128,7 +131,11 @@ trackTagBtn.addEventListener('click', function() {
     const isActive = result.isTracking;
     const tagInfo = result.tagInfo;
 
-    if (isActive) tagInput.value = tagInfo || '';
+    if (isActive) {
+      tagInput.value = tagInfo ?
+        formatTagName(tagInfo) :
+        '';
+    }
 
     browser.storage.sync.set({ isTracking: !isActive }, function() {
       trackTagBtn.textContent = !isActive ? STOP : START;
