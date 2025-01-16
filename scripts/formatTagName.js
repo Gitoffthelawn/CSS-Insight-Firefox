@@ -1,4 +1,4 @@
 export function formatTagName(tagName) {
-  const formattedTagName = tagName.replace(/^[^#]*#/, "#").replace(/\./g, ' .');
+  const formattedTagName = tagName.replace(/^[^#]*#/, "#");
   return formattedTagName;
 }

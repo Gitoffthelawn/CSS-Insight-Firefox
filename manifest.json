@@ -3,7 +3,7 @@
   "name": "__MSG_chromename__",
   "short_name": "__MSG_shortname__",
   "description": "__MSG_description__",
-  "version": "1.12.11",
+  "version": "1.12.12",
   "browser_specific_settings": {
     "gecko": {
       "id": "{3cf44542-4a82-4868-a366-be8126b42458}",
