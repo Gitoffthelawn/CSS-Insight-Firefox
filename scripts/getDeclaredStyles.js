@@ -4,14 +4,18 @@ function getDeclaredStyles(selector = 'body') {
   const FOUND = browser.i18n.getMessage('found');
   const stylesheets = document.styleSheets;
   let result = '';
-
+  let subSelectors = getSubSelectors(selector);
+  
   for (const sheet of stylesheets) {
     try {
       const rules = sheet.cssRules || sheet.rules;
-
+      
       for (const rule of rules) {
-        if (rule.selectorText?.includes(selector.toLowerCase().trim())) {
-          result += formatRule(rule) + '\n\n';
+        for (const _selector of subSelectors) {
+          if (rule.selectorText?.includes(_selector)) {
+            result += `${FOUND} "${_selector}": \n`;
+            result += formatRule(rule) + '\n\n';
+          }
         }
       }
     } catch (e) {
@@ -19,10 +23,10 @@ function getDeclaredStyles(selector = 'body') {
       result += WAS_ERROR;
     }
   }
-
+  
   return result.length ?
-           `${FOUND} "${selector}": \n\n${result}` :
-           `${NO_RULES} "${selector}"`;
+    result :
+    `${NO_RULES} "${selector}"`;
 }
 
 getDeclaredStyles(data);
