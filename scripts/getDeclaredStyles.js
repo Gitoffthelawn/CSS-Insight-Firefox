@@ -5,11 +5,13 @@ function getDeclaredStyles(selector = 'body') {
   const stylesheets = document.styleSheets;
   let result = '';
   let subSelectors = getSubSelectors(selector);
-  
+
   for (const sheet of stylesheets) {
+    if (subSelectors === null) break;
+    
     try {
       const rules = sheet.cssRules || sheet.rules;
-      
+
       for (const rule of rules) {
         for (const _selector of subSelectors) {
           if (rule.selectorText?.includes(_selector)) {
