@@ -1,3 +1,7 @@
+function checkRule(rule, selector) {
+  return rule.selectorText?.includes(selector);
+}
+
 function getDeclaredStyles(selector = 'body') {
   const NO_RULES = browser.i18n.getMessage('norules');
   const WAS_ERROR = browser.i18n.getMessage('waserror');
@@ -14,7 +18,7 @@ function getDeclaredStyles(selector = 'body') {
 
       for (const rule of rules) {
         for (const _selector of subSelectors) {
-          if (rule.selectorText?.includes(_selector)) {
+          if (checkRule(rule, _selector)) {
             result += `${FOUND} "${_selector}": \n`;
             result += formatRule(rule) + '\n\n';
           }
