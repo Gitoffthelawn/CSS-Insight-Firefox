@@ -1,7 +1,7 @@
 function getComputedStyles(selector) {
   const NOT_FOUND = browser.i18n.getMessage('notfound');
   const FOUND = browser.i18n.getMessage('found');
-  const element = document.querySelector(CSS.escape(selector));
+  const element = document.querySelector(selector);
 
   if (!element) {
     return `${NOT_FOUND} "${selector}"`;
