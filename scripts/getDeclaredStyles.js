@@ -40,7 +40,7 @@ function getDeclaredStyles(selector = 'body') {
       for (const rule of rules) {
         for (const _selector of subSelectors) {
           if (checkRule(rule, _selector)) {
-            result += `${FOUND} "${_selector}": \n`;
+            result += `${FOUND} "${_selector}"(${rule.parentStyleSheet?.href}): \n`;
             result += formatRule(rule) + '\n\n';
           }
         }

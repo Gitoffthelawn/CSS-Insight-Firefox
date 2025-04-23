@@ -11,23 +11,25 @@
 <body>
   <div class="container">
     <h2 data-i18n="mainheader"></h2>
-
+    
     <button id="trackTagBtn" data-i18n="tracktagstart" class="track"></button>
-
+    
     <label for="tagInput" data-i18n="taginputlabel"></label>
     <input type="text" id="tagInput" data-i18n="taginputplaceholder" placeholder="i18n">
     <button id="declaredStylesBtn" data-i18n="declaredstyles"></button>
     <button id="computedStylesBtn" data-i18n="computedstyles"></button>
     <button id="mediaRulesBtn" data-i18n="mediarules"></button>
     <button id="keyframesRulesBtn" data-i18n="keyframesrules"></button>
-
+    
     <div id="cssInfo" class="hidden">
       <h3 data-i18n="infoheader"></h3>
       <button id="hideCssInfo" class="hideBtn">X</button>
-      <textarea id="styleData" readonly></textarea>
+      <div>
+        <pre id="styleData" class="output"></pre>
+      </div>
       <button id="copyBtn" data-i18n="copytext"></button>
     </div>
-
+    
     <button id="moreDetailsBtn" class="hidden" data-i18n="moredetails"></button>
     
     <button id="applyRuleBtn" data-i18n="applyrule" class="apply"></button>
@@ -38,7 +40,7 @@
       <button id="injectCSSBtn" data-i18n="injectcss" class="apply"></button>
     </div>
   </div>
-
+  
   <script src="scripts/i18n.js"></script>
   <script type="module" src="popup.js"></script>
 </body>

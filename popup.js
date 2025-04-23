@@ -63,7 +63,7 @@ document.getElementById('keyframesRulesBtn').addEventListener('click', () => {
 });
 
 document.getElementById('copyBtn').addEventListener('click', () => {
-  const text = document.getElementById('styleData').value;
+  const text = document.getElementById('styleData').innerText;
   navigator.clipboard.writeText(text).then(() => {
     document.getElementById('copyBtn').textContent = COPIED;
     setTimeout(() => {
