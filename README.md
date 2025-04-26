@@ -41,4 +41,16 @@ We welcome contributions from the community! If you have ideas for new features 
 
 This project is licensed under the [MIT License](LICENSE).
 
+## Third-Party Libraries and Licenses
+
+This project makes use of the following third-party library:
+
+- **highlight.js**  
+  Website: [https://highlightjs.org/](https://highlightjs.org/)  
+  License: [BSD 3-Clause License](https://github.com/highlightjs/highlight.js/blob/main/LICENSE)
+
+  *highlight.js* is a syntax highlighting library used for displaying code with automatic language detection and formatting.  
+  It is included in this project under the terms of the BSD 3-Clause License.
+  
+  Note: The project uses the "atom-one-dark" theme included with highlight.js.
 ---
