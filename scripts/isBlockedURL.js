@@ -1,4 +1,5 @@
 export function isBlockedURL(tabs) {
+  if (!tabs) return true;
   const url = tabs[0]?.url || '';
   
   const blockedPatterns = [
