@@ -1,7 +1,7 @@
 {
   "chromename": { "message": "CSS Insight" },
   "shortname": { "message": "CSS Insight" },
-  "description": { "message": "CSS Insight lets you quickly view and edit CSS styles on any webpage, providing detailed style info and one-click copying." },
+  "description": { "message": "CSS Insight — quick CSS inspection, analysis, adding and one-click copying on any webpage. The perfect tool for web developers." },
   "defaulttitle": { "message": "CSS Insight" },
   "mainheader": { "message": "Analyze Styles" },
   "tracktagstart": { "message": "Start Tracking Tag" },
