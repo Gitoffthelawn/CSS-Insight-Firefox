@@ -1,5 +1,13 @@
 # CSS Insight for Firefox
 
+![GitHub license](https://img.shields.io/github/license/MarkAlexI/CSS-Insight-Firefox)
+![GitHub stars](https://img.shields.io/github/stars/MarkAlexI/CSS-Insight-Firefox?style=social)
+![GitHub forks](https://img.shields.io/github/forks/MarkAlexI/CSS-Insight-Firefox?style=social)
+![Last commit](https://img.shields.io/github/last-commit/MarkAlexI/CSS-Insight-Firefox)
+![Issues](https://img.shields.io/github/issues/MarkAlexI/CSS-Insight-Firefox)
+[![AMO](https://img.shields.io/amo/v/css-insight)](https://addons.mozilla.org/firefox/addon/css-insight)
+![status](https://img.shields.io/badge/status-v1.18.5-blue)
+
 CSS Insight is a powerful browser extension designed to simplify and enhance your CSS workflow. With this tool, you can instantly access and edit styles directly on any webpage, making it a must-have for web developers.
 
 ## Features
