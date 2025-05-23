@@ -27,5 +27,6 @@
   "norules": { "message": "No rules for selector " },
   "nokeyframes": { "message": "No @keyframes rules for that resource." },
   "nomedia": { "message": "No media rules for that resource." },
-  "waserror": { "message": "Don't parsed rule because CORS.\n\n" }
+  "waserror": { "message": "Don't parsed rule because CORS.\n\n" },
+  "savetofile": { "message": "Save to file" }
 }

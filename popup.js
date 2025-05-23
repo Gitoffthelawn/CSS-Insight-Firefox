@@ -88,6 +88,20 @@ document.getElementById('moreDetailsBtn').addEventListener('click', () => {
   });
 });
 
+document.getElementById('saveBtn').addEventListener('click', () => {
+  const cssCode = document.getElementById('styleData').textContent;
+  const blob = new Blob([cssCode], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = 'styles.txt';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+});
+
 document.getElementById('applyRuleBtn').addEventListener('click', () => {
   setTimeout(function() {
     document.getElementById('newRule').classList.remove('hidden');

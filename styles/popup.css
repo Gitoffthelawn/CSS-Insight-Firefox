@@ -98,6 +98,16 @@ input:hover {
   }
 }
 
+.controls {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
 .hideBtn {
   width: 20%;
+}
+
+#saveBtn {
+  max-width: 50%;
 }
