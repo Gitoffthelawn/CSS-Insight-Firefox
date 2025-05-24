@@ -12,11 +12,11 @@ function getMediaRules() {
       }
     } catch (e) {
       console.warn(e.message);
-      mediaRules += WAS_ERROR;
+      mediaRules += `/* ${WAS_ERROR} */`;
     }
   }
-
-  return mediaRules ? mediaRules.trim() : NO_MEDIA;
+  
+  return mediaRules ? mediaRules.trim() : `/* ${NO_MEDIA} */`;
 }
 
 getMediaRules();

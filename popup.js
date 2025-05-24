@@ -90,12 +90,12 @@ document.getElementById('moreDetailsBtn').addEventListener('click', () => {
 
 document.getElementById('saveBtn').addEventListener('click', () => {
   const cssCode = document.getElementById('styleData').textContent;
-  const blob = new Blob([cssCode], { type: 'text/plain' });
+  const blob = new Blob([cssCode], { type: 'text/css' });
   const url = URL.createObjectURL(blob);
   
   const link = document.createElement('a');
   link.href = url;
-  link.download = 'styles.txt';
+  link.download = 'styles.css';
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);

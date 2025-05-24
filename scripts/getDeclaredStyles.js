@@ -16,10 +16,10 @@ function extractSubSelectorsFromRule(selectorText) {
 
 function checkRule(rule, userSelector) {
   if (!rule.selectorText) return false;
-
+  
   const ruleParts = extractSubSelectorsFromRule(rule.selectorText);
   const userParts = getSubSelectors(userSelector);
-
+  
   return userParts.every(part => ruleParts.includes(part));
 }
 
@@ -30,30 +30,30 @@ function getDeclaredStyles(selector = 'body') {
   const stylesheets = document.styleSheets;
   let result = '';
   let subSelectors = getSubSelectors(selector);
-
+  
   for (const sheet of stylesheets) {
     if (subSelectors === null) break;
     
     try {
       const rules = sheet.cssRules || sheet.rules;
-
+      
       for (const rule of rules) {
         for (const _selector of subSelectors) {
           if (checkRule(rule, _selector)) {
-            result += `${FOUND} "${_selector}"(${rule.parentStyleSheet?.href}): \n`;
+            result += `/* ${FOUND} "${_selector}"(${rule.parentStyleSheet?.href}): */\n`;
             result += formatRule(rule) + '\n\n';
           }
         }
       }
     } catch (e) {
       console.warn(e.message);
-      result += WAS_ERROR;
+      result += `/* ${WAS_ERROR} */`;
     }
   }
   
   return result.length ?
     result :
-    `${NO_RULES} "${selector}"`;
+    `/* ${NO_RULES} "${selector} */"`;
 }
 
 getDeclaredStyles(data);
