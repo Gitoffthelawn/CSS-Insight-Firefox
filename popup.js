@@ -3,12 +3,13 @@ import { displayStyles } from './scripts/displayStyles.js';
 import { formatTagName } from './scripts/formatTagName.js';
 import { isBlockedURL } from './scripts/isBlockedURL.js';
 import { getActiveTab } from './scripts/getActiveTab.js';
+import { t } from "./scripts/t.js";
 
-const COPY = browser.i18n.getMessage('copytext');
-const COPIED = browser.i18n.getMessage('copied');
-const NO_DATA = browser.i18n.getMessage('nodata');
-const STOP = browser.i18n.getMessage('tracktagstop');
-const START = browser.i18n.getMessage('tracktagstart');
+const COPY = t('copytext');
+const COPIED = t('copied');
+const NO_DATA = t('nodata');
+const STOP = t('tracktagstop');
+const START = t('tracktagstart');
 
 document.getElementById('declaredStylesBtn').addEventListener('click', async () => {
   const tab = await getActiveTab();
