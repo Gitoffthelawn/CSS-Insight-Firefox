@@ -10,6 +10,8 @@ const COPIED = t('copied');
 const NO_DATA = t('nodata');
 const STOP = t('tracktagstop');
 const START = t('tracktagstart');
+const MORE_DETAILS = t('moredetails');
+const LOOK_DETAILS = t('lookdetails');
 
 document.getElementById('declaredStylesBtn').addEventListener('click', async () => {
   const tab = await getActiveTab();
@@ -68,7 +70,12 @@ document.getElementById('moreDetailsBtn').addEventListener('click', async () => 
   const tab = await getActiveTab();
   if (!tab || isBlockedURL([tab])) return;
   
-  executeScript(tab.id, './scripts/showModalWithCSSData.js', (result) => { console.log(result, 'result'); }, cssData);
+  executeScript(tab.id, './scripts/showModalWithCSSData.js', (result) => {
+    console.log(result, 'result');
+    
+    document.getElementById('moreDetailsBtn').textContent = LOOK_DETAILS;
+    setTimeout(() => { document.getElementById('moreDetailsBtn').textContent = MORE_DETAILS; }, 3000);
+  }, cssData);
 });
 
 document.getElementById('saveBtn').addEventListener('click', () => {

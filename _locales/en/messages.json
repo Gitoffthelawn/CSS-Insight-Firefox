@@ -28,5 +28,6 @@
   "nokeyframes": { "message": "No @keyframes rules for that resource." },
   "nomedia": { "message": "No media rules for that resource." },
   "waserror": { "message": "Don't parsed rule because CORS.\n\n" },
-  "savetofile": { "message": "Save to file" }
+  "savetofile": { "message": "Save to file" },
+  "lookdetails": { "message": "Data was Sent to Modal" }
 }
