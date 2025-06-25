@@ -47,7 +47,7 @@ function getDeclaredStyles(selector = 'body') {
       }
     } catch (e) {
       console.warn(e.message);
-      result += `${WAS_ERROR}`;
+      result += `/* ${WAS_ERROR} */`;
     }
   }
   
