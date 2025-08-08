@@ -6,7 +6,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const features = [
     '🔧 Added saving of retrieved styles to a file.',
     '⚡ Improved style analysis.',
-    '🌐 Added content security policy.'
+    '🌐 Added content security policy.',
+    '🐾 Added the updates page'
   ];
   
   const ul = document.getElementById('features');
