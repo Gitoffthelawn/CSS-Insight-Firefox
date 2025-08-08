@@ -3,7 +3,7 @@
   "name": "__MSG_chromename__",
   "short_name": "__MSG_shortname__",
   "description": "__MSG_description__",
-  "version": "1.19.9",
+  "version": "1.20",
   "browser_specific_settings": {
     "gecko": {
       "id": "{3cf44542-4a82-4868-a366-be8126b42458}",
@@ -45,5 +45,21 @@
   }],
   "content_security_policy": {
     "extension_pages": "default-src 'self'; style-src 'self';"
+  },
+  "web_accessible_resources": [
+  {
+    "resources": [
+      "update/update.html",
+      "update/update.css",
+      "update/update.js"
+    ],
+    "matches": ["<all_urls>"]
+  }],
+  "background": {
+    "scripts": [
+      "scripts/service_worker.js"
+    ],
+    "persistent": false,
+    "type": "module"
   }
 }
