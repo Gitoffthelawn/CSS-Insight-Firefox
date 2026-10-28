@@ -6,7 +6,7 @@
 ![Last commit](https://img.shields.io/github/last-commit/MarkAlexI/CSS-Insight-Firefox)
 ![Issues](https://img.shields.io/github/issues/MarkAlexI/CSS-Insight-Firefox)
 [![AMO](https://img.shields.io/amo/v/css-insight)](https://addons.mozilla.org/firefox/addon/css-insight/)
-![status](https://img.shields.io/badge/status-v1.23.0-blue)
+![status](https://img.shields.io/badge/status-v1.23.1-blue)
 
 CSS Insight is a lightweight Firefox extension for inspecting and testing CSS directly on a webpage. It is designed for quick checks when opening a full developer tools workflow is inconvenient.
 
@@ -19,6 +19,7 @@ CSS Insight is a lightweight Firefox extension for inspecting and testing CSS di
 - **CSS preview**: Apply a custom rule to the selected document or open shadow root without changing the website source.
 - **Copy and export**: Copy retrieved CSS or save it as a `.css` file.
 - **On-page details**: Open long output in an isolated page dialog.
+- **Localized interface**: Use CSS Insight in English, German, Spanish, Japanese, Brazilian Portuguese or Ukrainian.
 - **Firefox Android support**: Use the popup and one-step picker on supported mobile versions.
 
 CSS Insight does not collect analytics or send inspected page data to a server. It requests page and tab access so a picker started from a mobile extension page can wait for a selection on any supported webpage in the same browser window. The content controller stays idle until the user starts the picker.

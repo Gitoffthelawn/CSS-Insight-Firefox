@@ -4,10 +4,10 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('version').textContent = version;
 
   const features = [
-    '🖼️ Pick and inspect elements inside matching iframe documents.',
-    '🧩 Inspect elements and styles inside nested open shadow roots.',
-    '🎯 Keep later CSS operations attached to the frame and root you selected.',
-    '🎨 Apply independent preview rules to a document or open shadow root.'
+    '🌐 Use the interface in five new languages.',
+    '🧩 See localized picker, status and CSS result messages.',
+    '🛡️ Keep browser-specific protected-page guidance.',
+    '✅ Validate every locale against the complete English message set.'
   ];
 
   const list = document.getElementById('features');

@@ -8,6 +8,13 @@ Run `npm run build`, then load `dist/firefox/manifest.json` through `about:debug
 - Reload or navigate the active webpage while the popup is open. Confirm background tab tracking does not resize or visibly redraw the popup.
 - Arm and cancel **Pick an Element** several times. Confirm the status message can change the popup height without changing its width.
 
+## Localization
+
+- Run `npm run check` and confirm all 49 message keys are present in `de`, `en`, `es`, `ja`, `pt_BR` and `uk`.
+- Switch the browser UI through German, Spanish, Japanese, Brazilian Portuguese and Ukrainian, restarting the browser when prompted. Confirm the extension name, description, popup controls, picker tooltips, status messages and on-page details dialog use the selected locale.
+- In every locale, trigger an invalid selector, a protected-page message, a picker timeout and an unavailable iframe or shadow-root target. Confirm no empty labels or raw localization keys appear.
+- Confirm long German and Portuguese labels wrap vertically without changing the desktop popup width.
+
 ## Page access
 
 - Open a normal HTTPS page and confirm all page actions are enabled.
@@ -86,6 +93,6 @@ Run `npm run build`, then load `dist/firefox/manifest.json` through `about:debug
 - Confirm the manifest content script uses `all_frames`, `match_about_blank` and `match_origin_as_fallback` without adding permissions.
 - Confirm Firefox uses a non-persistent background event page, not a service worker.
 - Run `npm run check` and confirm all automated tests pass.
-- Run `unzip -t dist/CSS-Insight-firefox-1.23.0-amo.zip`.
-- Run `unzip -t dist/CSS-Insight-firefox-1.23.0-source.zip` and confirm `manifest.json`, `package.json`, `scripts/` and `tests/` are at the ZIP root.
+- Run `unzip -t dist/CSS-Insight-firefox-1.23.1-amo.zip`.
+- Run `unzip -t dist/CSS-Insight-firefox-1.23.1-source.zip` and confirm `manifest.json`, `package.json`, `scripts/` and `tests/` are at the ZIP root.
 - Confirm the AMO archive contains no tests, build tools, `.gitignore`, `metadata.json`, or obsolete scripts.

@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.23.1 - 2026-10-28
+
+### Added
+
+- Complete interface localizations for German, Spanish, Japanese, Brazilian Portuguese and Ukrainian alongside English.
+
+### Development
+
+- Static checks now require every supported locale to contain the complete English message-key set and a store-safe description.
+
 ## 1.23.0 - 2026-10-28
 
 ### Added
