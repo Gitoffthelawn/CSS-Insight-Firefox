@@ -46,5 +46,6 @@
   "pageaccessprotected": { "message": "CSS Insight cannot run on browser-internal or protected pages." },
   "pageaccessmozilla": { "message": "Firefox does not allow extensions to inspect this protected Mozilla page." },
   "pageaccessfile": { "message": "Firefox could not access this local file." },
-  "operationfailed": { "message": "CSS Insight could not complete the operation." }
+  "operationfailed": { "message": "CSS Insight could not complete the operation." },
+  "targetunavailable": { "message": "The selected frame or open shadow root is no longer available." }
 }

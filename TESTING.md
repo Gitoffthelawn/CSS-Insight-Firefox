@@ -38,7 +38,7 @@ Run `npm run build`, then load `dist/firefox/manifest.json` through `about:debug
 - Add a constructed stylesheet through `document.adoptedStyleSheets`. Confirm its rules, media queries and keyframes are returned and labeled **constructed stylesheet**.
 - Add `.other, .unrelated` beside a selected `.card` rule. Confirm unrelated selector branches are not returned.
 - Confirm `.card:hover` and `.card::before` remain discoverable when `.card` is selected.
-- Reload the extension over an existing test tab, retrieve declared styles and confirm the page console contains no `getSubSelectors` or `formatRule` reference error.
+- Reload the extension over an existing test tab, retrieve declared styles and confirm the page console contains no missing-helper reference error.
 - Retrieve a rule declared inside a page `<style>` element. Confirm its source is labeled as inline instead of `null`.
 - Apply a CSS Insight preview, retrieve the same rule and confirm its source is labeled **CSS Insight preview**.
 - Retrieve computed styles for a valid selector.
@@ -47,6 +47,18 @@ Run `npm run build`, then load `dist/firefox/manifest.json` through `about:debug
 - Copy retrieved CSS and save it to `styles.css`.
 - Open **View More Details**, copy from the page dialog, close it with Escape and close it by selecting the backdrop.
 - Apply a CSS rule, then apply a different rule. Confirm the second preview replaces the first CSS Insight style element.
+
+## Iframe and shadow-root targets
+
+- In `tests/fixtures/modern-css.html`, start the picker and select `.frame-card` inside the iframe. Confirm the popup stores the selector and Declared Styles, Computed Styles, Media Rules and Keyframes all read from the iframe document.
+- Apply a rule to `.frame-card`. Confirm the rule changes the iframe element rather than a matching element in the top document.
+- Open View More Details for iframe output. Confirm the dialog appears over the top document and is not clipped to the iframe bounds.
+- Select `.shadow-card` inside the open shadow root. Confirm the picker tooltip shows the host path separated with `>>>` and the popup keeps the local `.shadow-card` selector.
+- Retrieve declared and computed styles for `.shadow-card`. Confirm the inline shadow stylesheet and its media rule are returned.
+- Apply two preview rules inside the open shadow root. Confirm the second replaces the first in that root without removing a preview previously applied to the document.
+- Remove `#component-fixture` after selecting `.shadow-card`, then run a CSS action. Confirm CSS Insight reports that the selected target is no longer available.
+- Confirm a click inside a closed shadow root selects its visible host instead of claiming access to hidden descendants.
+- Repeat the iframe and open shadow-root checks in a same-origin nested iframe and an `about:srcdoc` iframe.
 
 ## Firefox Android
 
@@ -71,8 +83,9 @@ Run `npm run build`, then load `dist/firefox/manifest.json` through `about:debug
 
 - Confirm the extension requests `storage`, `tabs`, `activeTab`, `scripting` and all-sites host access.
 - Confirm the picker content controller remains idle until **Pick an Element** is selected.
+- Confirm the manifest content script uses `all_frames`, `match_about_blank` and `match_origin_as_fallback` without adding permissions.
 - Confirm Firefox uses a non-persistent background event page, not a service worker.
 - Run `npm run check` and confirm all automated tests pass.
-- Run `unzip -t dist/CSS-Insight-firefox-1.22.0-amo.zip`.
-- Run `unzip -t dist/CSS-Insight-firefox-1.22.0-source.zip` and confirm `manifest.json`, `package.json`, `scripts/` and `tests/` are at the ZIP root.
+- Run `unzip -t dist/CSS-Insight-firefox-1.23.0-amo.zip`.
+- Run `unzip -t dist/CSS-Insight-firefox-1.23.0-source.zip` and confirm `manifest.json`, `package.json`, `scripts/` and `tests/` are at the ZIP root.
 - Confirm the AMO archive contains no tests, build tools, `.gitignore`, `metadata.json`, or obsolete scripts.

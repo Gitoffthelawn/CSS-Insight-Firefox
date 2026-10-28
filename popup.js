@@ -38,6 +38,9 @@ const pageActionElements = Array.from(document.querySelectorAll('[data-page-acti
 let isBusy = false;
 let currentWindowId = null;
 let targetTab = null;
+let targetFrameId = 0;
+let targetDocumentId = null;
+let targetShadowPath = [];
 let targetRefreshId = 0;
 let refreshTimer = 0;
 let pickerExpiryTimer = 0;
@@ -99,7 +102,16 @@ function sendRuntimeMessage(message) {
 function normalizePickerResult(value) {
   return {
     selector: typeof value?.selector === 'string' ? value.selector : '',
+    shadowPath: Array.isArray(value?.shadowPath)
+      ? value.shadowPath.filter(selector => typeof selector === 'string' && selector.trim())
+      : [],
     tabId: Number.isInteger(value?.tabId) ? value.tabId : null,
+    frameId: Number.isInteger(value?.frameId) && value.frameId >= 0
+      ? value.frameId
+      : 0,
+    documentId: typeof value?.documentId === 'string' && value.documentId
+      ? value.documentId
+      : null,
     windowId: Number.isInteger(value?.windowId) ? value.windowId : null,
     updatedAt: Number(value?.updatedAt) || 0
   };
@@ -269,6 +281,9 @@ async function adoptResultTarget() {
 
     if (getPageAccess(tab).allowed) {
       targetTab = tab;
+      targetFrameId = pickerResult.frameId;
+      targetDocumentId = pickerResult.documentId;
+      targetShadowPath = [...pickerResult.shadowPath];
     }
   } catch {
     // A closed result tab falls back to the most recent eligible page.
@@ -322,6 +337,9 @@ async function refreshTarget() {
 
     if (refreshId === targetRefreshId) {
       targetTab = resolvedTab;
+      targetFrameId = 0;
+      targetDocumentId = null;
+      targetShadowPath = [];
     }
   } catch {
     // Page operations will report a precise error if no target remains.
@@ -370,19 +388,27 @@ async function getLiveTargetTab() {
       return targetTab;
     } catch {
       targetTab = null;
+      targetFrameId = 0;
+      targetDocumentId = null;
+      targetShadowPath = [];
     }
   }
 
   return refreshTarget();
 }
 
-async function prepareTargetTab() {
+async function prepareTargetContext() {
   const tab = await getLiveTargetTab();
   assertPageAccess(tab);
 
   try {
-    await ensureContentScripts(tab.id);
-    return tab;
+    await ensureContentScripts(tab.id, targetFrameId, targetDocumentId);
+    return {
+      tab,
+      frameId: targetFrameId,
+      documentId: targetDocumentId,
+      shadowPath: [...targetShadowPath]
+    };
   } catch (error) {
     const normalizedError = error instanceof Error ? error : new Error(String(error));
     normalizedError.pageUrl = tab.url || '';
@@ -398,8 +424,9 @@ async function runPageOperation(operation) {
   let tab = null;
 
   try {
-    tab = await prepareTargetTab();
-    return await operation(tab);
+    const context = await prepareTargetContext();
+    tab = context.tab;
+    return await operation(context);
   } catch (error) {
     showStatus(formatOperationError(error, tab || targetTab), 'error');
     return null;
@@ -413,8 +440,17 @@ function getSelector() {
 }
 
 async function retrieveStyles(scriptFile, data = null) {
-  await runPageOperation(async tab => {
-    const result = await executeScript(tab.id, scriptFile, data);
+  await runPageOperation(async context => {
+    const request = data && typeof data === 'object'
+      ? { ...data, shadowPath: context.shadowPath }
+      : { selector: data, shadowPath: context.shadowPath };
+    const result = await executeScript(
+      context.tab.id,
+      scriptFile,
+      request,
+      context.frameId,
+      context.documentId
+    );
     displayStyles(result);
   });
 }
@@ -428,11 +464,11 @@ document.getElementById('computedStylesBtn').addEventListener('click', () => {
 });
 
 document.getElementById('mediaRulesBtn').addEventListener('click', () => {
-  retrieveStyles('scripts/getMediaRules.js');
+  retrieveStyles('scripts/getMediaRules.js', {});
 });
 
 document.getElementById('keyframesRulesBtn').addEventListener('click', () => {
-  retrieveStyles('scripts/getKeyframesRules.js');
+  retrieveStyles('scripts/getKeyframesRules.js', {});
 });
 
 document.getElementById('copyBtn').addEventListener('click', async () => {
@@ -449,8 +485,13 @@ document.getElementById('copyBtn').addEventListener('click', async () => {
 document.getElementById('moreDetailsBtn').addEventListener('click', async () => {
   const cssData = styleDataElement.textContent || NO_DATA;
 
-  await runPageOperation(async tab => {
-    await executeScript(tab.id, 'scripts/showModalWithCSSData.js', cssData);
+  await runPageOperation(async context => {
+    await executeScript(
+      context.tab.id,
+      'scripts/showModalWithCSSData.js',
+      cssData,
+      0
+    );
     const button = document.getElementById('moreDetailsBtn');
     button.textContent = LOOK_DETAILS;
     setTimeout(() => { button.textContent = MORE_DETAILS; }, 3000);
@@ -484,8 +525,14 @@ document.getElementById('injectCSSBtn').addEventListener('click', async () => {
     return;
   }
 
-  await runPageOperation(async tab => {
-    await executeScript(tab.id, 'scripts/applyStyles.js', rule);
+  await runPageOperation(async context => {
+    await executeScript(
+      context.tab.id,
+      'scripts/applyStyles.js',
+      { cssText: rule, shadowPath: context.shadowPath },
+      context.frameId,
+      context.documentId
+    );
     document.getElementById('newRule').classList.add('hidden');
     showStatus(t('stylesapplied'), 'success');
   });

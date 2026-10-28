@@ -55,6 +55,8 @@
   <main class="scope shell">
     <article class="card">Inspect this card with CSS Insight.</article>
   </main>
+  <section id="component-fixture"></section>
+  <iframe id="frame-fixture" title="CSS Insight iframe fixture"></iframe>
   <script>
     const constructedSheet = new CSSStyleSheet();
     constructedSheet.replaceSync(`
@@ -70,6 +72,40 @@
       ...document.adoptedStyleSheets,
       constructedSheet
     ];
+
+    const componentHost = document.getElementById('component-fixture');
+    const componentRoot = componentHost.attachShadow({ mode: 'open' });
+    const componentStyle = document.createElement('style');
+    componentStyle.textContent = `
+      .shadow-card {
+        color: darkgreen;
+      }
+      @media (width > 20rem) {
+        .shadow-card:hover::before { content: "shadow"; }
+      }
+      @keyframes shadow-fade {
+        from { opacity: .75; }
+        to { opacity: 1; }
+      }
+    `;
+    const shadowCard = document.createElement('button');
+    shadowCard.className = 'shadow-card';
+    shadowCard.textContent = 'Inspect this open shadow-root element.';
+    componentRoot.append(componentStyle, shadowCard);
+
+    document.getElementById('frame-fixture').srcdoc = `
+      <!doctype html>
+      <html lang="en">
+        <head>
+          <style>
+            .frame-card { color: darkblue; }
+            @media (width > 10rem) { .frame-card { display: grid; } }
+            @keyframes frame-fade { from { opacity: .8; } to { opacity: 1; } }
+          </style>
+        </head>
+        <body><button class="frame-card">Inspect this iframe element.</button></body>
+      </html>
+    `;
   </script>
 </body>
 </html>

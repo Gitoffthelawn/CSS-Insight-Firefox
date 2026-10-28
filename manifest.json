@@ -3,7 +3,7 @@
   "name": "__MSG_chromename__",
   "short_name": "__MSG_shortname__",
   "description": "__MSG_description__",
-  "version": "1.22.0",
+  "version": "1.23.0",
   "browser_specific_settings": {
     "gecko": {
       "id": "{3cf44542-4a82-4868-a366-be8126b42458}",
@@ -44,10 +44,12 @@
         "<all_urls>"
       ],
       "js": [
-        "scripts/formatRule.js",
-        "scripts/getSubSelectors.js",
+        "scripts/inspectionTarget.js",
         "scripts/getTagName.js"
-      ]
+      ],
+      "all_frames": true,
+      "match_about_blank": true,
+      "match_origin_as_fallback": true
     }
   ],
   "background": {

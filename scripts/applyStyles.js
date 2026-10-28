@@ -1,15 +1,32 @@
-function applyStyles(cssText) {
-  const styleKey = '__CSS_INSIGHT_PREVIEW_STYLE__';
-  let styleElement = globalThis[styleKey];
+function applyStyles(request) {
+  const styleKey = '__CSS_INSIGHT_PREVIEW_STYLES__';
+  const targetUtilities = globalThis.__CSS_INSIGHT_TARGET_UTILS__;
+  const root = targetUtilities.resolveInspectionRoot(request);
+
+  if (!root) {
+    throw new Error(browser.i18n.getMessage('targetunavailable'));
+  }
+
+  let previewStyles = globalThis[styleKey];
+
+  if (!(previewStyles instanceof WeakMap)) {
+    previewStyles = new WeakMap();
+    globalThis[styleKey] = previewStyles;
+  }
+
+  let styleElement = previewStyles.get(root);
 
   if (!styleElement?.isConnected) {
     styleElement = document.createElement('style');
     styleElement.dataset.cssInsightPreview = 'true';
-    (document.head || document.documentElement).appendChild(styleElement);
-    globalThis[styleKey] = styleElement;
+    const container = root === document
+      ? document.head || document.documentElement
+      : root;
+    container.appendChild(styleElement);
+    previewStyles.set(root, styleElement);
   }
 
-  styleElement.textContent = String(cssText || '');
+  styleElement.textContent = String(request?.cssText ?? request ?? '');
   return true;
 }
 

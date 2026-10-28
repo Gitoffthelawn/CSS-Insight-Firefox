@@ -15,6 +15,10 @@ const cssRuleWalkerSource = await readFile(
   new URL('../scripts/cssRuleWalker.js', import.meta.url),
   'utf8'
 );
+const inspectionTargetSource = await readFile(
+  new URL('../scripts/inspectionTarget.js', import.meta.url),
+  'utf8'
+);
 
 const messages = {
   invalidselector: 'Invalid selector',
@@ -25,7 +29,8 @@ const messages = {
   sourceinline: 'inline <style>',
   sourcepreview: 'CSS Insight preview',
   sourceconstructed: 'constructed stylesheet',
-  sourceunknown: 'unknown stylesheet'
+  sourceunknown: 'unknown stylesheet',
+  targetunavailable: 'Target unavailable'
 };
 
 function makeSheet(href, ownerNode) {
@@ -70,6 +75,7 @@ function readDeclaredStyles(styleSheets, styleElements) {
   });
 
   vm.runInContext(`(() => { ${formatRuleSource} })()`, context);
+  vm.runInContext(`(() => { ${inspectionTargetSource} })()`, context);
   vm.runInContext(`(() => { ${cssRuleWalkerSource} })()`, context);
   assert.equal(vm.runInContext('typeof formatRule', context), 'undefined');
   assert.equal(vm.runInContext('typeof collectStyleSheets', context), 'undefined');

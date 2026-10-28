@@ -74,7 +74,7 @@ function installBrowserMock({ silentMessage = () => false } = {}) {
       }
     },
     runtime: {
-      getManifest: () => ({ version: '1.22.0' }),
+      getManifest: () => ({ version: '1.23.0' }),
       getURL: path => `moz-extension://test/${path}`,
       onMessage: events.message,
       onStartup: events.startup,
@@ -125,10 +125,13 @@ test('arms every eligible tab in one window and accepts only its first selection
   const selection = {
     action: 'cssInsight:selectElement',
     token: armResponse.session.token,
-    selector: 'main > article'
+    selector: 'main > article',
+    shadowPath: ['app-shell']
   };
   const winner = await mock.events.message.listener(selection, {
-    tab: mock.tabs[1]
+    tab: mock.tabs[1],
+    frameId: 12,
+    documentId: 'document-12'
   });
   const lateClick = await mock.events.message.listener(selection, {
     tab: mock.tabs[0]
@@ -138,6 +141,9 @@ test('arms every eligible tab in one window and accepts only its first selection
   assert.equal(lateClick.accepted, false);
   assert.equal(mock.stored.cssInsightPickerState['7'].tabId, 2);
   assert.equal(mock.stored.cssInsightPickerState['7'].selector, 'main > article');
+  assert.equal(mock.stored.cssInsightPickerState['7'].frameId, 12);
+  assert.equal(mock.stored.cssInsightPickerState['7'].documentId, 'document-12');
+  assert.deepEqual(mock.stored.cssInsightPickerState['7'].shadowPath, ['app-shell']);
   assert.equal('8' in mock.stored.cssInsightPickerState, false);
   assert.deepEqual(
     mock.messages

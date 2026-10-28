@@ -1,5 +1,31 @@
 # Changelog
 
+## 1.23.0 - 2026-10-28
+
+### Added
+
+- The element picker now runs in matching iframe documents and keeps the selected frame as the target for later CSS operations.
+- Elements inside open shadow roots can be selected and inspected through nested host paths.
+- Declared Styles, Computed Styles, Media Rules, Keyframes and Apply Rule now use the selected frame and open shadow-root context.
+
+### Changed
+
+- Related `about:blank`, `about:srcdoc`, `data:` and `blob:` frames are included when their creator is an allowed page.
+- CSS preview styles are isolated per document or shadow root, so updating one preview does not replace a preview in another root.
+- The on-page details dialog stays in the top frame to avoid being clipped by a small iframe.
+
+### Fixed
+
+- Picker-generated selectors are now unique within their actual document or shadow root instead of being collapsed to the outer shadow host.
+- A removed or replaced open shadow root produces a stable localized result instead of running the operation against the wrong document.
+- Document-aware routing is used when supported so a navigated iframe cannot silently receive operations intended for its previous document.
+
+### Development
+
+- Added a shared inspection-target helper, iframe routing checks and nested open-shadow-root regression coverage.
+- Added iframe and open shadow-root cases to the modern CSS fixture.
+- Removed the obsolete selector-token helper and limited persistent frame scripts to the picker dependencies.
+
 ## 1.22.0 - 2026-10-28
 
 ### Added

@@ -11,6 +11,10 @@ const formatRuleSource = await readFile(
   new URL('../scripts/formatRule.js', import.meta.url),
   'utf8'
 );
+const inspectionTargetSource = await readFile(
+  new URL('../scripts/inspectionTarget.js', import.meta.url),
+  'utf8'
+);
 const declaredStylesSource = await readFile(
   new URL('../scripts/getDeclaredStyles.js', import.meta.url),
   'utf8'
@@ -37,6 +41,7 @@ const messages = {
   sourceinline: 'inline <style>',
   sourcepreview: 'CSS Insight preview',
   sourceunknown: 'unknown stylesheet',
+  targetunavailable: 'The selected target is unavailable',
   waserror: 'A stylesheet could not be read'
 };
 
@@ -64,6 +69,7 @@ function makeContext(document) {
 
 function loadUtilities(context) {
   vm.runInContext(`(() => { ${formatRuleSource} })()`, context);
+  vm.runInContext(`(() => { ${inspectionTargetSource} })()`, context);
   vm.runInContext(`(() => { ${helperSource} })()`, context);
   return vm.runInContext('__CSS_INSIGHT_STYLE_UTILS__', context);
 }
@@ -210,9 +216,76 @@ test('computed styles return a stable message for an invalid selector', () => {
   });
   context.__CSS_INSIGHT_DATA__ = '[';
   context.window = { getComputedStyle() {} };
+  vm.runInContext(`(() => { ${inspectionTargetSource} })()`, context);
 
   const result = vm.runInContext(computedStylesSource, context);
   assert.match(result, /Invalid CSS selector/);
+});
+
+test('declared and computed styles resolve the selected open shadow root', () => {
+  const element = {
+    matches(selector) {
+      return selector === '.control';
+    }
+  };
+  const owner = { localName: 'style', id: 'component', dataset: {} };
+  const rule = {
+    cssText: '.control { color: rebeccapurple; }',
+    selectorText: '.control'
+  };
+  const mediaRule = {
+    cssRules: [rule],
+    cssText: '@media (width > 10rem) { .control { color: rebeccapurple; } }',
+    type: 4
+  };
+  const keyframesRule = {
+    cssRules: [],
+    cssText: '@keyframes pulse { from { opacity: .8; } to { opacity: 1; } }',
+    type: 7
+  };
+  const sheet = { cssRules: [mediaRule, keyframesRule], href: null, ownerNode: owner };
+  rule.parentStyleSheet = sheet;
+  const shadowRoot = {
+    adoptedStyleSheets: [],
+    styleSheets: [sheet],
+    querySelector(selector) {
+      return selector === '.control' ? element : null;
+    },
+    querySelectorAll(selector) {
+      if (selector === 'style') return [owner];
+      return selector === '.control' ? [element] : [];
+    }
+  };
+  const document = {
+    adoptedStyleSheets: [],
+    styleSheets: [],
+    querySelector(selector) {
+      return selector === 'app-shell' ? { shadowRoot } : null;
+    },
+    querySelectorAll() { return []; }
+  };
+  const context = makeContext(document);
+  const computedStyle = ['color'];
+  computedStyle.getPropertyValue = property =>
+    property === 'color' ? 'rgb(102, 51, 153)' : '';
+  context.window = { getComputedStyle: () => computedStyle };
+  context.__CSS_INSIGHT_DATA__ = {
+    selector: '.control',
+    shadowPath: ['app-shell']
+  };
+
+  loadUtilities(context);
+  const declaredResult = vm.runInContext(declaredStylesSource, context);
+  const computedResult = vm.runInContext(computedStylesSource, context);
+  const mediaResult = vm.runInContext(mediaRulesSource, context);
+  const keyframesResult = vm.runInContext(keyframesRulesSource, context);
+
+  assert.match(declaredResult, /@media \(width > 10rem\)/);
+  assert.match(declaredResult, /\.control \{\s*color: rebeccapurple;/);
+  assert.match(declaredResult, /inline <style> \(id="component"\)/);
+  assert.match(computedResult, /color: rgb\(102, 51, 153\);/);
+  assert.match(mediaResult, /@media \(width > 10rem\)/);
+  assert.match(keyframesResult, /@keyframes pulse/);
 });
 
 test('media and keyframe collectors retain nested grouping context', () => {

@@ -1,11 +1,16 @@
-function getKeyframes() {
+function getKeyframes(request = {}) {
   const NO_KEYFRAMES = browser.i18n.getMessage('nokeyframes');
+  const TARGET_UNAVAILABLE = browser.i18n.getMessage('targetunavailable');
   const WAS_ERROR = browser.i18n.getMessage('waserror');
   const utilities = globalThis.__CSS_INSIGHT_STYLE_UTILS__;
+  const targetUtilities = globalThis.__CSS_INSIGHT_TARGET_UTILS__;
+  const root = targetUtilities.resolveInspectionRoot(request);
   let keyframes = '';
 
+  if (!root) return `/* ${TARGET_UNAVAILABLE} */`;
+
   utilities.walkStyleSheets(
-    document,
+    root,
     (rule, ancestors) => {
       if (utilities.isKeyframesRule(rule)) {
         keyframes += `${utilities.formatRuleWithAncestors(rule, ancestors)}\n\n`;
@@ -20,4 +25,4 @@ function getKeyframes() {
   return keyframes ? keyframes.trim() : `/* ${NO_KEYFRAMES} */`;
 }
 
-getKeyframes();
+getKeyframes(globalThis.__CSS_INSIGHT_DATA__);

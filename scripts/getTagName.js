@@ -12,7 +12,7 @@
 
   const existingController = globalThis[CONTROLLER_KEY];
 
-  if (existingController?.version === '1.22.0') {
+  if (existingController?.version === '1.23.0') {
     return;
   }
 
@@ -30,8 +30,7 @@
   let tooltipRemovalTimer = 0;
   const retiredTokens = [];
 
-  const escapeIdentifier = globalThis.CSS?.escape || (value =>
-    String(value).replace(/[^a-zA-Z0-9_-]/g, character => `\\${character}`));
+  const targetUtilities = globalThis.__CSS_INSIGHT_TARGET_UTILS__;
 
   function sendRuntimeMessage(message) {
     return browser.runtime.sendMessage(message);
@@ -45,87 +44,11 @@
     };
   }
 
-  function queryCount(selector) {
-    try {
-      return document.querySelectorAll(selector).length;
-    } catch {
-      return 0;
-    }
-  }
-
-  function normalizeElement(element) {
-    let current = element;
-    let root = current?.getRootNode?.();
-
-    while (globalThis.ShadowRoot && root instanceof ShadowRoot) {
-      current = root.host;
-      root = current?.getRootNode?.();
-    }
-
-    return current;
-  }
-
   function getEventElement(event) {
     const path = typeof event.composedPath === 'function' ? event.composedPath() : [];
-    const element = path.find(node =>
+    return path.find(node =>
       node?.nodeType === Node.ELEMENT_NODE && node !== tooltipHost
     ) || event.target;
-
-    return normalizeElement(element);
-  }
-
-  function createSegment(element) {
-    const tagName = element.localName || element.tagName.toLowerCase();
-
-    if (element.id) {
-      const idSelector = `#${escapeIdentifier(element.id)}`;
-
-      if (queryCount(idSelector) === 1) {
-        return `${tagName}${idSelector}`;
-      }
-    }
-
-    const classes = Array.from(element.classList || [])
-      .filter(Boolean)
-      .slice(0, 4)
-      .map(className => `.${escapeIdentifier(className)}`)
-      .join('');
-
-    let segment = `${tagName}${classes}`;
-    const parent = element.parentElement;
-
-    if (parent) {
-      const siblings = Array.from(parent.children)
-        .filter(sibling => sibling.localName === element.localName);
-
-      if (siblings.length > 1) {
-        segment += `:nth-of-type(${siblings.indexOf(element) + 1})`;
-      }
-    }
-
-    return segment;
-  }
-
-  function createUniqueSelector(element) {
-    const segments = [];
-    let current = normalizeElement(element);
-
-    while (current?.nodeType === Node.ELEMENT_NODE) {
-      segments.unshift(createSegment(current));
-      const selector = segments.join(' > ');
-
-      if (queryCount(selector) === 1) {
-        return selector;
-      }
-
-      if (current === document.documentElement) {
-        break;
-      }
-
-      current = current.parentElement;
-    }
-
-    return segments.join(' > ') || 'body';
   }
 
   function createTooltip() {
@@ -207,8 +130,10 @@
 
     if (!element) return;
 
+    const target = targetUtilities.createInspectionTarget(element);
+
     showTooltip(
-      createUniqueSelector(element),
+      targetUtilities.formatInspectionTarget(target),
       latestPointer.clientX,
       latestPointer.clientY
     );
@@ -315,17 +240,18 @@
       return;
     }
 
-    const selector = createUniqueSelector(element);
+    const target = targetUtilities.createInspectionTarget(element);
     stopTracking({ keepTooltip: true });
 
     sendRuntimeMessage({
       action: ACTIONS.selectElement,
       token,
-      selector
+      selector: target.selector,
+      shadowPath: target.shadowPath
     }).then(response => {
       if (response?.accepted) {
         showTooltip(
-          `${browser.i18n.getMessage('selectedtooltip')}: ${selector}`,
+          `${browser.i18n.getMessage('selectedtooltip')}: ${targetUtilities.formatInspectionTarget(target)}`,
           event.clientX,
           event.clientY
         );
@@ -361,7 +287,7 @@
   }
 
   const controller = {
-    version: '1.22.0',
+    version: '1.23.0',
     destroy,
     getState,
     startTracking,

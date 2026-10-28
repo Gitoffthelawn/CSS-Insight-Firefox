@@ -75,6 +75,11 @@ check(Array.isArray(manifest.content_scripts) && manifest.content_scripts.length
   'The Firefox picker controller must be declared as a content script.');
 check(manifest.content_scripts?.[0]?.matches?.includes('<all_urls>'),
   'The Firefox picker must be available on supported pages before the popup opens.');
+check(manifest.content_scripts?.[0]?.all_frames === true,
+  'The Firefox picker must be injected into matching iframe documents.');
+check(manifest.content_scripts?.[0]?.match_about_blank === true &&
+  manifest.content_scripts?.[0]?.match_origin_as_fallback === true,
+  'The Firefox picker must cover related blank, data and blob frames.');
 check(!('web_accessible_resources' in manifest), 'Internal update resources must not be web-accessible.');
 check(Array.isArray(manifest.background?.scripts), 'Firefox must use background scripts.');
 check(!('service_worker' in (manifest.background || {})), 'Firefox must not use a Chromium service worker.');
@@ -101,6 +106,7 @@ for (const relativePath of [
 for (const forbiddenFile of [
   '1.html',
   '1.sql',
+  'scripts/getSubSelectors.js',
   'scripts/formatTagName.js',
   'scripts/isBlockedURL.js'
 ]) {

@@ -1,15 +1,24 @@
-function getComputedStyles(selector) {
+function getComputedStyles(request) {
   const INVALID_SELECTOR = browser.i18n.getMessage('invalidselector');
   const NOT_FOUND = browser.i18n.getMessage('notfound');
+  const TARGET_UNAVAILABLE = browser.i18n.getMessage('targetunavailable');
   const FOUND = browser.i18n.getMessage('found');
+  const targetUtilities = globalThis.__CSS_INSIGHT_TARGET_UTILS__;
+  const target = targetUtilities.normalizeInspectionTarget(request);
+  const root = targetUtilities.resolveInspectionRoot(target);
+  const selector = target.selector;
   const safeSelector = String(selector)
     .replace(/\*\//g, '* /')
     .replace(/[\r\n]+/g, ' ')
     .trim();
   let element;
 
+  if (!root) {
+    return `/* ${TARGET_UNAVAILABLE} */`;
+  }
+
   try {
-    element = document.querySelector(selector);
+    element = root.querySelector(selector);
   } catch {
     return `/* ${INVALID_SELECTOR} "${safeSelector}" */`;
   }
