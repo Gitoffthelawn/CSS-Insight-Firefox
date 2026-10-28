@@ -74,7 +74,7 @@ function installBrowserMock({ silentMessage = () => false } = {}) {
       }
     },
     runtime: {
-      getManifest: () => ({ version: '1.21.1' }),
+      getManifest: () => ({ version: '1.22.0' }),
       getURL: path => `moz-extension://test/${path}`,
       onMessage: events.message,
       onStartup: events.startup,

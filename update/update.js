@@ -4,10 +4,10 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('version').textContent = version;
 
   const features = [
-    '📱 Start the picker, then choose any supported page in the same window.',
-    '🎯 The first selection wins and stops the picker in every tab.',
-    '🧭 Silent or inactive tabs no longer block the next picker session.',
-    '⏱️ Picker sessions can be cancelled and expire after two minutes.'
+    '🧩 Inspect matching rules inside modern CSS at-rules and native nesting.',
+    '📚 Include constructed stylesheets adopted by the document.',
+    '🎯 Match complete selector branches without unrelated comma-list results.',
+    '✅ Get a clear result when a CSS selector is invalid.'
   ];
 
   const list = document.getElementById('features');

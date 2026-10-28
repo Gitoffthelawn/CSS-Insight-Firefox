@@ -22,6 +22,7 @@
   "injectcss": { "message": "Inject your CSS" },
   "close": { "message": "Close" },
   "notfound": { "message": "No elements found for selector" },
+  "invalidselector": { "message": "Invalid CSS selector" },
   "found": { "message": "Found rule for selector" },
   "norules": { "message": "No rules for selector " },
   "nokeyframes": { "message": "No @keyframes rules for that resource." },

@@ -7,10 +7,16 @@ const SUPPORT_SCRIPT_FILES = [
 const SCRIPT_DEPENDENCIES = Object.freeze({
   'scripts/getDeclaredStyles.js': [
     'scripts/formatRule.js',
-    'scripts/getSubSelectors.js'
+    'scripts/cssRuleWalker.js'
   ],
-  'scripts/getKeyframesRules.js': ['scripts/formatRule.js'],
-  'scripts/getMediaRules.js': ['scripts/formatRule.js']
+  'scripts/getKeyframesRules.js': [
+    'scripts/formatRule.js',
+    'scripts/cssRuleWalker.js'
+  ],
+  'scripts/getMediaRules.js': [
+    'scripts/formatRule.js',
+    'scripts/cssRuleWalker.js'
+  ]
 });
 
 const GET_PICKER_STATE = 'cssInsight:getPickerState';

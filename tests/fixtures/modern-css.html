@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CSS Insight modern CSS fixture</title>
+  <style id="modern-css-fixture">
+    @layer components {
+      .shell {
+        container-type: inline-size;
+
+        & > .card {
+          display: block;
+          padding: 1rem;
+        }
+
+        @media (width > 20rem) {
+          & > .card {
+            display: grid;
+          }
+        }
+      }
+
+      @supports (display: grid) {
+        .card {
+          gap: .5rem;
+        }
+      }
+
+      @container (width > 1px) {
+        .card {
+          border: 1px solid currentColor;
+        }
+      }
+
+      @scope (.scope) {
+        .card {
+          color: rebeccapurple;
+        }
+      }
+
+      @keyframes fixture-fade {
+        from { opacity: .5; }
+        to { opacity: 1; }
+      }
+    }
+
+    .other,
+    .unrelated {
+      outline: 2px solid red;
+    }
+  </style>
+</head>
+<body>
+  <main class="scope shell">
+    <article class="card">Inspect this card with CSS Insight.</article>
+  </main>
+  <script>
+    const constructedSheet = new CSSStyleSheet();
+    constructedSheet.replaceSync(`
+      @media (width > 20rem) {
+        .card:hover::before { content: "adopted"; }
+      }
+      @keyframes adopted-fade {
+        from { transform: scale(.98); }
+        to { transform: scale(1); }
+      }
+    `);
+    document.adoptedStyleSheets = [
+      ...document.adoptedStyleSheets,
+      constructedSheet
+    ];
+  </script>
+</body>
+</html>

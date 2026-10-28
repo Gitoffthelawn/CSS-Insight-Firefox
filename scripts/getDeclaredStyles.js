@@ -1,28 +1,3 @@
-function extractSubSelectorsFromRule(selectorText) {
-  const selectors = selectorText.toLowerCase().split(',').map(s => s.trim());
-  const parts = new Set();
-  
-  for (const sel of selectors) {
-    const matches = sel.match(/^[a-z0-9-]+|#[\w-]+|\.[\w-]+/g);
-    if (matches) {
-      for (const m of matches) {
-        parts.add(m);
-      }
-    }
-  }
-  
-  return Array.from(parts);
-}
-
-function checkRule(rule, userSelector) {
-  if (!rule.selectorText) return false;
-  
-  const ruleParts = extractSubSelectorsFromRule(rule.selectorText);
-  const userParts = globalThis.__CSS_INSIGHT_STYLE_UTILS__.getSubSelectors(userSelector);
-  
-  return userParts.every(part => ruleParts.includes(part));
-}
-
 function sanitizeStyleSource(value) {
   return String(value)
     .replace(/\*\//g, '* /')
@@ -30,9 +5,7 @@ function sanitizeStyleSource(value) {
     .trim();
 }
 
-function getStyleSource(rule) {
-  const sheet = rule.parentStyleSheet;
-
+function getStyleSource(sheet) {
   if (!sheet) {
     return browser.i18n.getMessage('sourceunknown');
   }
@@ -67,36 +40,50 @@ function getStyleSource(rule) {
 }
 
 function getDeclaredStyles(selector = 'body') {
-  const NO_RULES = browser.i18n.getMessage('norules');
-  const WAS_ERROR = browser.i18n.getMessage('waserror');
   const FOUND = browser.i18n.getMessage('found');
-  const stylesheets = document.styleSheets;
-  let result = '';
-  let subSelectors = globalThis.__CSS_INSIGHT_STYLE_UTILS__.getSubSelectors(selector);
-  
-  for (const sheet of stylesheets) {
-    if (subSelectors === null) break;
-    
-    try {
-      const rules = sheet.cssRules || sheet.rules;
-      
-      for (const rule of rules) {
-        for (const _selector of subSelectors) {
-          if (checkRule(rule, _selector)) {
-            result += `/* ${FOUND} "${_selector}"(${getStyleSource(rule)}): */\n`;
-            result += globalThis.__CSS_INSIGHT_STYLE_UTILS__.formatRule(rule) + '\n\n';
-          }
-        }
-      }
-    } catch (e) {
-      console.warn(e.message);
-      result += `/* ${WAS_ERROR} */`;
-    }
+  const INVALID_SELECTOR = browser.i18n.getMessage('invalidselector');
+  const NO_RULES = browser.i18n.getMessage('norules');
+  const NOT_FOUND = browser.i18n.getMessage('notfound');
+  const WAS_ERROR = browser.i18n.getMessage('waserror');
+  const utilities = globalThis.__CSS_INSIGHT_STYLE_UTILS__;
+  const safeSelector = utilities.sanitizeCssComment(selector);
+  let elements;
+
+  try {
+    elements = Array.from(document.querySelectorAll(selector));
+  } catch {
+    return `/* ${INVALID_SELECTOR} "${safeSelector}" */`;
   }
-  
-  return result.length ?
-    result :
-    `/* ${NO_RULES} "${selector} */"`;
+
+  if (!elements.length) {
+    return `/* ${NOT_FOUND} "${safeSelector}" */`;
+  }
+
+  const matchedRules = new Set();
+  let result = '';
+
+  utilities.walkStyleSheets(
+    document,
+    (rule, ancestors, sheet) => {
+      if (!rule?.selectorText || matchedRules.has(rule)) return;
+
+      const matches = elements.some(element =>
+        utilities.selectorMatchesElement(rule, ancestors, element)
+      );
+
+      if (!matches) return;
+      matchedRules.add(rule);
+      result += `/* ${FOUND} "${safeSelector}" (${getStyleSource(sheet)}): */\n`;
+      result += `${utilities.formatRuleWithAncestors(rule, ancestors)}\n\n`;
+    },
+    (error, sheet) => {
+      console.warn(error?.message || error);
+      const message = utilities.sanitizeCssComment(WAS_ERROR);
+      result += `/* ${message} (${getStyleSource(sheet)}) */\n\n`;
+    }
+  );
+
+  return result.trim() || `/* ${NO_RULES} "${safeSelector}" */`;
 }
 
 getDeclaredStyles(globalThis.__CSS_INSIGHT_DATA__);

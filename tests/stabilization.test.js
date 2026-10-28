@@ -54,9 +54,18 @@ test('reports Firefox injection result errors', () => {
 });
 
 test('dynamic style collectors receive their helper scripts explicitly', () => {
-  assert.match(commonSource, /'scripts\/getDeclaredStyles\.js': \[/);
-  assert.match(commonSource, /'scripts\/getKeyframesRules\.js': \['scripts\/formatRule\.js'\]/);
-  assert.match(commonSource, /'scripts\/getMediaRules\.js': \['scripts\/formatRule\.js'\]/);
+  assert.match(
+    commonSource,
+    /'scripts\/getDeclaredStyles\.js':[\s\S]*?'scripts\/cssRuleWalker\.js'/
+  );
+  assert.match(
+    commonSource,
+    /'scripts\/getKeyframesRules\.js':[\s\S]*?'scripts\/cssRuleWalker\.js'/
+  );
+  assert.match(
+    commonSource,
+    /'scripts\/getMediaRules\.js':[\s\S]*?'scripts\/cssRuleWalker\.js'/
+  );
   assert.match(commonSource, /files: \[\.\.\.dependencies, scriptFile\]/);
 });
 

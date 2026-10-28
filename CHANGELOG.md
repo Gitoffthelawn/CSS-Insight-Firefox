@@ -1,5 +1,27 @@
 # Changelog
 
+## 1.22.0 - 2026-10-28
+
+### Added
+
+- Declared Styles now finds matching rules inside `@media`, `@supports`, `@layer`, `@container`, `@scope` and native CSS nesting while preserving their parent context.
+- Document-level `adoptedStyleSheets` are included in declared styles, media-rule and keyframe inspection.
+
+### Changed
+
+- Declared-style matching now checks real page elements against complete selector branches instead of merging tag, class and ID fragments from unrelated comma-separated selectors.
+- Pseudo-element and transient-state rules such as `:hover` remain discoverable for the selected element.
+- Media rules and keyframes are collected recursively rather than only from the top level of each stylesheet.
+
+### Fixed
+
+- Invalid selectors now return a stable localized message from both Declared Styles and Computed Styles.
+- Selector text and stylesheet errors are sanitized before being written into generated CSS comments.
+
+### Development
+
+- Added a shared, browser-independent CSSOM walker and focused coverage for nested rules, constructed stylesheets, selector lists, pseudo-elements and invalid input.
+
 ## 1.21.1 - 2026-08-27
 
 ### Fixed

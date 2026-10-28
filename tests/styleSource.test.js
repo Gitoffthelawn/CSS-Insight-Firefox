@@ -11,13 +11,15 @@ const formatRuleSource = await readFile(
   new URL('../scripts/formatRule.js', import.meta.url),
   'utf8'
 );
-const getSubSelectorsSource = await readFile(
-  new URL('../scripts/getSubSelectors.js', import.meta.url),
+const cssRuleWalkerSource = await readFile(
+  new URL('../scripts/cssRuleWalker.js', import.meta.url),
   'utf8'
 );
 
 const messages = {
+  invalidselector: 'Invalid selector',
   norules: 'No rules',
+  notfound: 'Not found',
   waserror: 'Error',
   found: 'Found',
   sourceinline: 'inline <style>',
@@ -39,6 +41,11 @@ function makeSheet(href, ownerNode) {
 }
 
 function readDeclaredStyles(styleSheets, styleElements) {
+  const selectedElement = {
+    matches(selector) {
+      return selector === 'body';
+    }
+  };
   const context = vm.createContext({
     browser: {
       i18n: {
@@ -49,9 +56,11 @@ function readDeclaredStyles(styleSheets, styleElements) {
     },
     console: { warn() {} },
     document: {
+      adoptedStyleSheets: [],
       styleSheets,
       querySelectorAll(selector) {
-        return selector === 'style' ? styleElements : [];
+        if (selector === 'style') return styleElements;
+        return selector === 'body' ? [selectedElement] : [];
       }
     },
     CSSMediaRule: class CSSMediaRule {},
@@ -61,9 +70,9 @@ function readDeclaredStyles(styleSheets, styleElements) {
   });
 
   vm.runInContext(`(() => { ${formatRuleSource} })()`, context);
-  vm.runInContext(`(() => { ${getSubSelectorsSource} })()`, context);
+  vm.runInContext(`(() => { ${cssRuleWalkerSource} })()`, context);
   assert.equal(vm.runInContext('typeof formatRule', context), 'undefined');
-  assert.equal(vm.runInContext('typeof getSubSelectors', context), 'undefined');
+  assert.equal(vm.runInContext('typeof collectStyleSheets', context), 'undefined');
 
   return vm.runInContext(source, context);
 }
