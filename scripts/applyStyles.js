@@ -1,9 +1,16 @@
 function applyStyles(cssText) {
-  const styleElement = document.createElement('style');
+  const styleKey = '__CSS_INSIGHT_PREVIEW_STYLE__';
+  let styleElement = globalThis[styleKey];
 
-  styleElement.textContent = cssText;
+  if (!styleElement?.isConnected) {
+    styleElement = document.createElement('style');
+    styleElement.dataset.cssInsightPreview = 'true';
+    (document.head || document.documentElement).appendChild(styleElement);
+    globalThis[styleKey] = styleElement;
+  }
 
-  document.head.appendChild(styleElement);
+  styleElement.textContent = String(cssText || '');
+  return true;
 }
 
-applyStyles(data);
+applyStyles(globalThis.__CSS_INSIGHT_DATA__);

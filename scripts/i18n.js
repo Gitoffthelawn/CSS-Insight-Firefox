@@ -1,12 +1,13 @@
-import { t } from "./t.js";
+import { t } from './t.js';
 
-const words = document.querySelectorAll("[data-i18n]");
+for (const element of document.querySelectorAll('[data-i18n]')) {
+  element.textContent = t(element.dataset.i18n);
+}
 
-for (let i = 0; i < words.length; i++) {
-  const translation = t(words[i].getAttribute("data-i18n"));
-  if (words[i].placeholder === "i18n") {
-    words[i].placeholder = translation;
-  } else {
-    words[i].innerText = translation;
-  }
+for (const element of document.querySelectorAll('[data-i18n-placeholder]')) {
+  element.placeholder = t(element.dataset.i18nPlaceholder);
+}
+
+for (const element of document.querySelectorAll('[data-i18n-aria-label]')) {
+  element.setAttribute('aria-label', t(element.dataset.i18nAriaLabel));
 }

@@ -1,0 +1,72 @@
+# Manual Firefox test checklist
+
+Run `npm run build`, then load `dist/firefox/manifest.json` through `about:debugging#/runtime/this-firefox`.
+
+## Popup stability
+
+- Open the extension popup on desktop and leave it open for at least 30 seconds. Confirm its width remains fixed and no horizontal jumping occurs.
+- Reload or navigate the active webpage while the popup is open. Confirm background tab tracking does not resize or visibly redraw the popup.
+- Arm and cancel **Pick an Element** several times. Confirm the status message can change the popup height without changing its width.
+
+## Page access
+
+- Open a normal HTTPS page and confirm all page actions are enabled.
+- Open Google Search and confirm element picking and computed styles work.
+- Open Firefox Add-ons and confirm CSS Insight displays a protected-page explanation.
+- Open `support.mozilla.org` and confirm the protected Mozilla page explanation.
+- Open `about:addons` and `about:debugging` and confirm a protected-page explanation.
+- Open a local HTML file and confirm CSS Insight either works or displays a visible access error.
+- Open a PDF in Firefox and Reader View and confirm failed access is explained without breaking the popup.
+
+## Element picker
+
+- Select **Pick an Element**. Confirm the extension interface stays open and no webpage is activated automatically.
+- Switch to any supported webpage in the same window, then click a normal element. Confirm the picker stops automatically in all tabs.
+- Return to CSS Insight and confirm the generated selector appears without refreshing the popup.
+- Pick a link. Confirm the selecting click does not navigate and the link works normally afterward.
+- Pick an element whose class contains punctuation, such as a utility class with `:`. Confirm the generated selector is accepted by **Get Computed Styles**.
+- Start the picker, cancel it from the popup, then start it again and complete a selection.
+- Leave the picker armed for two minutes. Confirm it stops and the interface returns to **Pick an Element**.
+- Click elements in two armed tabs as close together as practical. Confirm only the first accepted selector is retained.
+
+## CSS tools
+
+- Retrieve declared styles for `body` and for the selected element.
+- Reload the extension over an existing test tab, retrieve declared styles and confirm the page console contains no `getSubSelectors` or `formatRule` reference error.
+- Retrieve a rule declared inside a page `<style>` element. Confirm its source is labeled as inline instead of `null`.
+- Apply a CSS Insight preview, retrieve the same rule and confirm its source is labeled **CSS Insight preview**.
+- Retrieve computed styles for a valid selector.
+- Enter an invalid selector and confirm a visible error is shown without breaking the popup.
+- Retrieve media rules and keyframes on a page that contains them.
+- Copy retrieved CSS and save it to `styles.css`.
+- Open **View More Details**, copy from the page dialog, close it with Escape and close it by selecting the backdrop.
+- Apply a CSS rule, then apply a different rule. Confirm the second preview replaces the first CSS Insight style element.
+
+## Firefox Android
+
+- Load the extension on Firefox Android 120 or newer with `web-ext run --target=firefox-android`.
+- Repeat element picking, computed styles, copy, and protected-page checks.
+- Open pages A and B, invoke CSS Insight and start the picker. Confirm Firefox does not choose a page for you.
+- Switch to page B, pick an element, then return to the existing CSS Insight interface. Confirm the selector appears without a refresh.
+- Retrieve styles, then arm the picker again and choose an element on page A. Confirm later CSS actions target page A.
+- Repeat the page-to-interface cycle at least three times. Confirm there is no wrong-tab activation, permanent disabled state or manual refresh.
+- Repeat **Pick an Element** immediately after returning from a successful selection. Confirm the next page receives the picker every time.
+- Include an old, unloaded or discarded tab in the window. Confirm it cannot leave the interface permanently disabled.
+- Confirm touch selection stops after one tap and protected Mozilla pages do not fall back to an older target.
+- Confirm the update page Close button closes its tab.
+
+## Window isolation
+
+- Open two browser windows and arm the picker in each.
+- Pick an element in the second window. Confirm the first window remains armed and keeps its own selector.
+- Cancel the picker in the first window. Confirm the second window result remains unchanged.
+
+## Package and permissions
+
+- Confirm the extension requests `storage`, `tabs`, `activeTab`, `scripting` and all-sites host access.
+- Confirm the picker content controller remains idle until **Pick an Element** is selected.
+- Confirm Firefox uses a non-persistent background event page, not a service worker.
+- Run `npm run check` and confirm all automated tests pass.
+- Run `unzip -t dist/CSS-Insight-firefox-1.21.1-amo.zip`.
+- Run `unzip -t dist/CSS-Insight-firefox-1.21.1-source.zip` and confirm `manifest.json`, `package.json`, `scripts/` and `tests/` are at the ZIP root.
+- Confirm the AMO archive contains no tests, build tools, `.gitignore`, `metadata.json`, or obsolete scripts.

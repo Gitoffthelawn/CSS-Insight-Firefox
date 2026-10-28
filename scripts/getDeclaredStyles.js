@@ -18,9 +18,52 @@ function checkRule(rule, userSelector) {
   if (!rule.selectorText) return false;
   
   const ruleParts = extractSubSelectorsFromRule(rule.selectorText);
-  const userParts = getSubSelectors(userSelector);
+  const userParts = globalThis.__CSS_INSIGHT_STYLE_UTILS__.getSubSelectors(userSelector);
   
   return userParts.every(part => ruleParts.includes(part));
+}
+
+function sanitizeStyleSource(value) {
+  return String(value)
+    .replace(/\*\//g, '* /')
+    .replace(/[\r\n]+/g, ' ')
+    .trim();
+}
+
+function getStyleSource(rule) {
+  const sheet = rule.parentStyleSheet;
+
+  if (!sheet) {
+    return browser.i18n.getMessage('sourceunknown');
+  }
+
+  if (sheet.href) {
+    return sanitizeStyleSource(sheet.href);
+  }
+
+  const owner = sheet.ownerNode;
+
+  if (owner?.dataset?.cssInsightPreview === 'true') {
+    return browser.i18n.getMessage('sourcepreview');
+  }
+
+  if (owner?.localName === 'style') {
+    const inlineLabel = browser.i18n.getMessage('sourceinline');
+    const ownerId = sanitizeStyleSource(owner.id || '');
+
+    if (ownerId) {
+      return `${inlineLabel} (id="${ownerId}")`;
+    }
+
+    const styleIndex = Array.from(document.querySelectorAll('style')).indexOf(owner);
+    return styleIndex >= 0 ? `${inlineLabel} #${styleIndex + 1}` : inlineLabel;
+  }
+
+  if (!owner) {
+    return browser.i18n.getMessage('sourceconstructed');
+  }
+
+  return browser.i18n.getMessage('sourceunknown');
 }
 
 function getDeclaredStyles(selector = 'body') {
@@ -29,7 +72,7 @@ function getDeclaredStyles(selector = 'body') {
   const FOUND = browser.i18n.getMessage('found');
   const stylesheets = document.styleSheets;
   let result = '';
-  let subSelectors = getSubSelectors(selector);
+  let subSelectors = globalThis.__CSS_INSIGHT_STYLE_UTILS__.getSubSelectors(selector);
   
   for (const sheet of stylesheets) {
     if (subSelectors === null) break;
@@ -40,8 +83,8 @@ function getDeclaredStyles(selector = 'body') {
       for (const rule of rules) {
         for (const _selector of subSelectors) {
           if (checkRule(rule, _selector)) {
-            result += `/* ${FOUND} "${_selector}"(${rule.parentStyleSheet?.href}): */\n`;
-            result += formatRule(rule) + '\n\n';
+            result += `/* ${FOUND} "${_selector}"(${getStyleSource(rule)}): */\n`;
+            result += globalThis.__CSS_INSIGHT_STYLE_UTILS__.formatRule(rule) + '\n\n';
           }
         }
       }
@@ -56,4 +99,4 @@ function getDeclaredStyles(selector = 'body') {
     `/* ${NO_RULES} "${selector} */"`;
 }
 
-getDeclaredStyles(data);
+getDeclaredStyles(globalThis.__CSS_INSIGHT_DATA__);

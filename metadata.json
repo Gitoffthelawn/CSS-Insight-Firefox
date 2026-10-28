@@ -1,10 +1,12 @@
 {
   "summary": {
-    "en-US": "CSS Insight – your go-to solution for fast and efficient style management directly in your browser!"
+    "en-US": "Inspect, copy, and test CSS directly on webpages with a lightweight developer tool for Firefox desktop and Android."
   },
-  "categories": [
-    "web-development"
-  ],
+  "categories": {
+    "firefox": [
+      "web-development"
+    ]
+  },
   "version": {
     "license": "MIT"
   }

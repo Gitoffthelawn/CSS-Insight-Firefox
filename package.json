@@ -1,0 +1,16 @@
+{
+  "name": "css-insight-firefox",
+  "version": "1.21.1",
+  "private": true,
+  "type": "module",
+  "description": "Firefox source and reproducible AMO packaging for CSS Insight.",
+  "releaseDate": "2026-08-27",
+  "scripts": {
+    "test": "node --test",
+    "check": "node tools/check.mjs && npm test",
+    "build": "npm run check && node tools/build.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

@@ -7,7 +7,7 @@ function getMediaRules() {
     try {
       for (let rule of stylesheet.cssRules) {
         if (rule instanceof CSSMediaRule) {
-          mediaRules += formatRule(rule) + '\n\n';
+          mediaRules += globalThis.__CSS_INSIGHT_STYLE_UTILS__.formatRule(rule) + '\n\n';
         }
       }
     } catch (e) {
@@ -15,7 +15,7 @@ function getMediaRules() {
       mediaRules += `/* ${WAS_ERROR} */`;
     }
   }
-  
+
   return mediaRules ? mediaRules.trim() : `/* ${NO_MEDIA} */`;
 }
 

@@ -1,2 +1,5 @@
-.amo-upload-uuid
-web-ext-artifacts/
+node_modules/
+dist/
+*.sql
+1.html
+.DS_Store

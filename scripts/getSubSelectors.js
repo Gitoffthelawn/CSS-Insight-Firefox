@@ -5,3 +5,8 @@ function parseSelector(selector) {
 function getSubSelectors(selector) {
   return parseSelector(selector.toLowerCase().trim());
 }
+
+globalThis.__CSS_INSIGHT_STYLE_UTILS__ = {
+  ...globalThis.__CSS_INSIGHT_STYLE_UTILS__,
+  getSubSelectors
+};

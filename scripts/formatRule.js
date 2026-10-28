@@ -36,3 +36,8 @@ function formatRule(rule) {
   
   return formatFlattenRule(rule);
 }
+
+globalThis.__CSS_INSIGHT_STYLE_UTILS__ = {
+  ...globalThis.__CSS_INSIGHT_STYLE_UTILS__,
+  formatRule
+};

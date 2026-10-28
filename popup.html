@@ -13,20 +13,22 @@
   <div class="container">
     <h2 data-i18n="mainheader"></h2>
     
-    <button id="trackTagBtn" data-i18n="tracktagstart" class="track"></button>
+    <p id="statusMessage" class="status hidden" role="status" aria-live="polite"></p>
+
+    <button type="button" id="trackTagBtn" data-i18n="tracktagstart" class="track" data-page-action></button>
     
     <label for="tagInput" data-i18n="taginputlabel"></label>
-    <input type="text" id="tagInput" data-i18n="taginputplaceholder" placeholder="i18n">
-    <button id="declaredStylesBtn" data-i18n="declaredstyles"></button>
-    <button id="computedStylesBtn" data-i18n="computedstyles"></button>
-    <button id="mediaRulesBtn" data-i18n="mediarules"></button>
-    <button id="keyframesRulesBtn" data-i18n="keyframesrules"></button>
+    <input type="text" id="tagInput" data-i18n-placeholder="taginputplaceholder">
+    <button type="button" id="declaredStylesBtn" data-i18n="declaredstyles" data-page-action></button>
+    <button type="button" id="computedStylesBtn" data-i18n="computedstyles" data-page-action></button>
+    <button type="button" id="mediaRulesBtn" data-i18n="mediarules" data-page-action></button>
+    <button type="button" id="keyframesRulesBtn" data-i18n="keyframesrules" data-page-action></button>
     
     <div id="cssInfo" class="hidden">
       <h3 data-i18n="infoheader"></h3>
       <div class="controls">
-        <button id="hideCssInfo" class="hideBtn">X</button>
-        <button id="saveBtn" data-i18n="savetofile">Save to file</button>
+        <button type="button" id="hideCssInfo" class="hideBtn" data-i18n-aria-label="close">×</button>
+        <button type="button" id="saveBtn" data-i18n="savetofile"></button>
       </div>
       <div>
         <pre class="output">
@@ -35,22 +37,23 @@
             id="styleData"></code>
         </pre>
       </div>
-      <button id="copyBtn" data-i18n="copytext"></button>
+      <button type="button" id="copyBtn" data-i18n="copytext"></button>
     </div>
     
-    <button id="moreDetailsBtn" class="hidden" data-i18n="moredetails"></button>
+    <button type="button" id="moreDetailsBtn" class="hidden" data-i18n="moredetails" data-page-action></button>
     
-    <button id="applyRuleBtn" data-i18n="applyrule" class="apply"></button>
+    <button type="button" id="applyRuleBtn" data-i18n="applyrule" class="apply"></button>
     <div id="newRule" class="hidden">
-      <h3 data-i18n="newruleheader"></h3>
-      <button id="hideNewRule" class="hideBtn">X</button>
-      <textarea id="newRuleData"></textarea>
-      <button id="injectCSSBtn" data-i18n="injectcss" class="apply"></button>
+      <h3 id="newRuleHeader" data-i18n="newruleheader"></h3>
+      <button type="button" id="hideNewRule" class="hideBtn" data-i18n-aria-label="close">×</button>
+      <textarea id="newRuleData" aria-labelledby="newRuleHeader"></textarea>
+      <button type="button" id="injectCSSBtn" data-i18n="injectcss" class="apply" data-page-action></button>
     </div>
   </div>
-  
+
   <script type="module" src="scripts/i18n.js"></script>
   <script type="module" src="popup.js"></script>
+
   <script src="scripts/highlight.min.js"></script>
 </body>
 
