@@ -1,3 +1,4 @@
+(() => {
 function getMediaRules(request = {}) {
   const NO_MEDIA = browser.i18n.getMessage('nomedia');
   const TARGET_UNAVAILABLE = browser.i18n.getMessage('targetunavailable');
@@ -48,4 +49,8 @@ function getMediaRules(request = {}) {
   return mediaRules ? mediaRules.trim() : `/* ${NO_MEDIA} */`;
 }
 
-getMediaRules(globalThis.__CSS_INSIGHT_DATA__);
+globalThis.__CSS_INSIGHT_OPERATIONS__ = {
+  ...globalThis.__CSS_INSIGHT_OPERATIONS__,
+  getMediaRules
+};
+})();

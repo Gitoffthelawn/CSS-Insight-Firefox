@@ -88,6 +88,22 @@ check(Array.isArray(manifest.content_scripts) && manifest.content_scripts.length
   'The Firefox picker controller must be declared as a content script.');
 check(manifest.content_scripts?.[0]?.matches?.includes('<all_urls>'),
   'The Firefox picker must be available on supported pages before the popup opens.');
+for (const runtimeFile of [
+  'scripts/formatRule.js',
+  'scripts/inspectionTarget.js',
+  'scripts/cssRuleWalker.js',
+  'scripts/getDeclaredStyles.js',
+  'scripts/getComputedStyles.js',
+  'scripts/getMediaRules.js',
+  'scripts/getKeyframesRules.js',
+  'scripts/applyStyles.js',
+  'scripts/showModalWithCSSData.js',
+  'scripts/inspectionBridge.js',
+  'scripts/getTagName.js'
+]) {
+  check(manifest.content_scripts?.[0]?.js?.includes(runtimeFile),
+    `The Firefox page runtime is missing: ${runtimeFile}`);
+}
 check(manifest.content_scripts?.[0]?.all_frames === true,
   'The Firefox picker must be injected into matching iframe documents.');
 check(manifest.content_scripts?.[0]?.match_about_blank === true &&
@@ -200,6 +216,9 @@ for (const file of firstPartyTextFiles) {
 }
 
 const pickerSource = await readFile(path.join(root, 'scripts/getTagName.js'), 'utf8');
+const bridgeSource = await readFile(path.join(root, 'scripts/inspectionBridge.js'), 'utf8');
+const commonSource = await readFile(path.join(root, 'scripts/common.js'), 'utf8');
+const ruleWalkerSource = await readFile(path.join(root, 'scripts/cssRuleWalker.js'), 'utf8');
 const pickerControllerVersions = [...pickerSource.matchAll(
   /(?:existingController\?\.version ===|version:)\s*['"]([^'"]+)['"]/g
 )].map(match => match[1]);
@@ -207,6 +226,15 @@ const pickerControllerVersions = [...pickerSource.matchAll(
 check(pickerControllerVersions.length === 2 &&
   pickerControllerVersions.every(version => version === manifest.version),
   'The picker controller version must match manifest.json.');
+check(bridgeSource.includes(`const VERSION = '${manifest.version}'`),
+  'The inspection bridge version must match manifest.json.');
+check(/cssInsight:runPageOperation/.test(commonSource) &&
+  /sendTabMessage\([\s\S]*?RUN_PAGE_OPERATION/.test(commonSource),
+  'Page operations must use the resident content runtime.');
+check(!/__CSS_INSIGHT_DATA__/.test(commonSource),
+  'Page operations must not share arguments through a persistent global value.');
+check(/^\(\(\) => \{/.test(ruleWalkerSource),
+  'CSS rule helpers must stay scoped for safe repeated loading.');
 check(!/javascript\s*:/i.test(pickerSource), 'Picker must not create javascript: URLs.');
 check(!/\.href\s*=/.test(pickerSource), 'Picker must not rewrite link destinations.');
 check(!/storage\.local/.test(pickerSource),

@@ -1,3 +1,4 @@
+(() => {
 function applyStyles(request) {
   const styleKey = '__CSS_INSIGHT_PREVIEW_STYLES__';
   const targetUtilities = globalThis.__CSS_INSIGHT_TARGET_UTILS__;
@@ -38,4 +39,8 @@ function applyStyles(request) {
   return true;
 }
 
-applyStyles(globalThis.__CSS_INSIGHT_DATA__);
+globalThis.__CSS_INSIGHT_OPERATIONS__ = {
+  ...globalThis.__CSS_INSIGHT_OPERATIONS__,
+  applyStyles
+};
+})();

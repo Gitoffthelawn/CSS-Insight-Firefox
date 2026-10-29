@@ -1,5 +1,22 @@
 # Changelog
 
+## 1.23.4 - 2026-10-29
+
+### Fixed
+
+- Media Rules and Keyframes no longer redeclare `TRANSIENT_PSEUDO_CLASSES` during repeated inspection on Firefox Android.
+- Repeated CSS operations no longer reinject lexical helper declarations into the same Firefox content scope.
+- Document-aware message routing falls back to the selected frame if routing by `documentId` is unavailable.
+
+### Changed
+
+- Page operations now run through one reusable manifest content runtime, with dynamic injection retained only as a bootstrap fallback.
+- Permissions and host access declarations remain unchanged.
+
+### Development
+
+- Added regression coverage for repeated helper loading, page-operation dispatch, collector failures and `documentId` fallback.
+
 ## 1.23.3 - 2026-10-29
 
 ### Added

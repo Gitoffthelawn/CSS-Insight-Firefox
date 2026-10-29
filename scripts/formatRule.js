@@ -1,3 +1,4 @@
+(() => {
 function formatMediaRule(rule) {
   let formattedRule = rule.cssText;
 
@@ -41,3 +42,4 @@ globalThis.__CSS_INSIGHT_STYLE_UTILS__ = {
   ...globalThis.__CSS_INSIGHT_STYLE_UTILS__,
   formatRule
 };
+})();

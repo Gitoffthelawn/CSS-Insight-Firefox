@@ -1,33 +1,29 @@
 const SUPPORT_SCRIPT_FILES = [
+  'scripts/formatRule.js',
   'scripts/inspectionTarget.js',
+  'scripts/cssRuleWalker.js',
+  'scripts/getDeclaredStyles.js',
+  'scripts/getComputedStyles.js',
+  'scripts/getMediaRules.js',
+  'scripts/getKeyframesRules.js',
+  'scripts/applyStyles.js',
+  'scripts/showModalWithCSSData.js',
+  'scripts/inspectionBridge.js',
   'scripts/getTagName.js'
 ];
 
-const SCRIPT_DEPENDENCIES = Object.freeze({
-  'scripts/getDeclaredStyles.js': [
-    'scripts/formatRule.js',
-    'scripts/inspectionTarget.js',
-    'scripts/cssRuleWalker.js'
-  ],
-  'scripts/getKeyframesRules.js': [
-    'scripts/formatRule.js',
-    'scripts/inspectionTarget.js',
-    'scripts/cssRuleWalker.js'
-  ],
-  'scripts/getMediaRules.js': [
-    'scripts/formatRule.js',
-    'scripts/inspectionTarget.js',
-    'scripts/cssRuleWalker.js'
-  ],
-  'scripts/getComputedStyles.js': [
-    'scripts/inspectionTarget.js'
-  ],
-  'scripts/applyStyles.js': [
-    'scripts/inspectionTarget.js'
-  ]
+const SCRIPT_OPERATIONS = Object.freeze({
+  'scripts/getDeclaredStyles.js': 'getDeclaredStyles',
+  'scripts/getComputedStyles.js': 'getComputedStyles',
+  'scripts/getMediaRules.js': 'getMediaRules',
+  'scripts/getKeyframesRules.js': 'getKeyframes',
+  'scripts/applyStyles.js': 'applyStyles',
+  'scripts/showModalWithCSSData.js': 'showModalWithCSSData'
 });
 
 const GET_PICKER_STATE = 'cssInsight:getPickerState';
+const GET_INSPECTION_STATE = 'cssInsight:getInspectionRuntimeState';
+const RUN_PAGE_OPERATION = 'cssInsight:runPageOperation';
 
 function getInjectionTarget(tabId, frameId, documentId) {
   return typeof documentId === 'string' && documentId
@@ -36,30 +32,40 @@ function getInjectionTarget(tabId, frameId, documentId) {
 }
 
 export function sendTabMessage(tabId, message, frameId = 0, documentId = null) {
-  const options = typeof documentId === 'string' && documentId
-    ? { documentId }
-    : { frameId };
-  return browser.tabs.sendMessage(tabId, message, options);
+  if (typeof documentId === 'string' && documentId) {
+    return browser.tabs.sendMessage(tabId, message, { documentId })
+      .catch(() => browser.tabs.sendMessage(tabId, message, { frameId }));
+  }
+
+  return browser.tabs.sendMessage(tabId, message, { frameId });
 }
 
 function isPickerResponse(response) {
   return response?.source === 'css-insight-picker' && response.ok === true;
 }
 
+function isInspectionResponse(response) {
+  return response?.source === 'css-insight-inspection' && response.ok === true;
+}
+
+async function getControllerState(tabId, frameId, documentId) {
+  const [picker, inspection] = await Promise.all([
+    sendTabMessage(tabId, { action: GET_PICKER_STATE }, frameId, documentId),
+    sendTabMessage(tabId, { action: GET_INSPECTION_STATE }, frameId, documentId)
+  ]);
+
+  return { picker, inspection };
+}
+
 export async function ensureContentScripts(tabId, frameId = 0, documentId = null) {
   try {
-    const response = await sendTabMessage(
-      tabId,
-      { action: GET_PICKER_STATE },
-      frameId,
-      documentId
-    );
+    const state = await getControllerState(tabId, frameId, documentId);
 
-    if (isPickerResponse(response)) {
-      return response;
+    if (isPickerResponse(state.picker) && isInspectionResponse(state.inspection)) {
+      return state;
     }
   } catch {
-    // The content controller has not been injected into this document yet.
+    // One or both content controllers are not available in this document yet.
   }
 
   await browser.scripting.executeScript({
@@ -67,18 +73,13 @@ export async function ensureContentScripts(tabId, frameId = 0, documentId = null
     files: SUPPORT_SCRIPT_FILES
   });
 
-  const response = await sendTabMessage(
-    tabId,
-    { action: GET_PICKER_STATE },
-    frameId,
-    documentId
-  );
+  const state = await getControllerState(tabId, frameId, documentId);
 
-  if (!isPickerResponse(response)) {
-    throw new Error('The CSS Insight content controller did not respond.');
+  if (!isPickerResponse(state.picker) || !isInspectionResponse(state.inspection)) {
+    throw new Error('The CSS Insight page controllers did not respond.');
   }
 
-  return response;
+  return state;
 }
 
 export async function executeScript(
@@ -88,46 +89,22 @@ export async function executeScript(
   frameId = 0,
   documentId = null
 ) {
-  const target = getInjectionTarget(tabId, frameId, documentId);
+  const operation = SCRIPT_OPERATIONS[scriptFile];
 
-  await browser.scripting.executeScript({
-    target,
-    args: [data],
-    func: value => {
-      globalThis.__CSS_INSIGHT_DATA__ = value;
-    }
-  });
-
-  try {
-    const dependencies = SCRIPT_DEPENDENCIES[scriptFile] || [];
-    const results = await browser.scripting.executeScript({
-      target,
-      files: [...dependencies, scriptFile]
-    });
-
-    if (!results.length) {
-      throw new Error('The injected script returned no result.');
-    }
-
-    const injectionResult = results[0];
-
-    if ('error' in injectionResult) {
-      const injectedError = injectionResult.error;
-      const message = injectedError?.message || String(injectedError || 'Injected script failed.');
-      throw new Error(message);
-    }
-
-    return injectionResult.result;
-  } finally {
-    try {
-      await browser.scripting.executeScript({
-        target,
-        func: () => {
-          delete globalThis.__CSS_INSIGHT_DATA__;
-        }
-      });
-    } catch {
-      // Navigation may destroy the document before cleanup runs.
-    }
+  if (!operation) {
+    throw new Error(`Unknown CSS Insight script: ${scriptFile}`);
   }
+
+  const response = await sendTabMessage(
+    tabId,
+    { action: RUN_PAGE_OPERATION, operation, data },
+    frameId,
+    documentId
+  );
+
+  if (!isInspectionResponse(response)) {
+    throw new Error(response?.error || 'The CSS Insight page operation did not respond.');
+  }
+
+  return response.result;
 }

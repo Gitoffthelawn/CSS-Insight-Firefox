@@ -1,3 +1,4 @@
+(() => {
 function getTargetUtilities() {
   const escapeIdentifier = globalThis.CSS?.escape || (value =>
     String(value).replace(/[^a-zA-Z0-9_-]/g, character => `\\${character}`));
@@ -138,3 +139,4 @@ globalThis.__CSS_INSIGHT_TARGET_UTILS__ = {
   ...globalThis.__CSS_INSIGHT_TARGET_UTILS__,
   ...getTargetUtilities()
 };
+})();

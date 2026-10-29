@@ -17,7 +17,16 @@ test('preserves the permissions required by the mobile tab-based popup flow', ()
   assert.equal(manifest.content_scripts.length, 1);
   assert.deepEqual(manifest.content_scripts[0].matches, ['<all_urls>']);
   assert.deepEqual(manifest.content_scripts[0].js, [
+    'scripts/formatRule.js',
     'scripts/inspectionTarget.js',
+    'scripts/cssRuleWalker.js',
+    'scripts/getDeclaredStyles.js',
+    'scripts/getComputedStyles.js',
+    'scripts/getMediaRules.js',
+    'scripts/getKeyframesRules.js',
+    'scripts/applyStyles.js',
+    'scripts/showModalWithCSSData.js',
+    'scripts/inspectionBridge.js',
     'scripts/getTagName.js'
   ]);
   assert.equal(manifest.content_scripts[0].all_frames, true);
@@ -48,26 +57,23 @@ test('picker supports one-step selection and cleanup', () => {
   assert.match(pickerSource, /CSS_INSIGHT_PICKER/);
 });
 
-test('reports Firefox injection result errors', () => {
-  assert.match(commonSource, /'error' in injectionResult/);
-  assert.match(commonSource, /throw new Error\(message\)/);
-});
-
-test('dynamic style collectors receive their helper scripts explicitly', () => {
+test('page operations use the manifest content runtime before dynamic fallback', () => {
   assert.match(
     commonSource,
-    /'scripts\/getDeclaredStyles\.js':[\s\S]*?'scripts\/inspectionTarget\.js'[\s\S]*?'scripts\/cssRuleWalker\.js'/
+    /'scripts\/getDeclaredStyles\.js':\s*'getDeclaredStyles'/
   );
   assert.match(
     commonSource,
-    /'scripts\/getKeyframesRules\.js':[\s\S]*?'scripts\/cssRuleWalker\.js'/
+    /'scripts\/getKeyframesRules\.js':\s*'getKeyframes'/
   );
   assert.match(
     commonSource,
-    /'scripts\/getMediaRules\.js':[\s\S]*?'scripts\/cssRuleWalker\.js'/
+    /'scripts\/getMediaRules\.js':\s*'getMediaRules'/
   );
-  assert.match(commonSource, /files: \[\.\.\.dependencies, scriptFile\]/);
-  assert.doesNotMatch(commonSource, /getSubSelectors/);
+  assert.match(commonSource, /cssInsight:runPageOperation/);
+  assert.match(commonSource, /sendTabMessage\([\s\S]*?RUN_PAGE_OPERATION/);
+  assert.match(commonSource, /files:\s*SUPPORT_SCRIPT_FILES/);
+  assert.match(commonSource, /documentId[\s\S]*?catch\(\(\) => browser\.tabs\.sendMessage/);
   assert.match(commonSource, /frameIds: \[frameId\]/);
 });
 

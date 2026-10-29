@@ -1,4 +1,4 @@
-# Store listing copy for 1.23.3
+# Store listing copy for 1.23.4
 
 Use the localized summaries in `metadata.json` for AMO. The release notes below are ready for the corresponding localized listing fields.
 
@@ -6,34 +6,34 @@ Use the localized summaries in `metadata.json` for AMO. The release notes below 
 
 Release notes:
 
-> Added filtering for computed properties by name or value, plus match status for Media Rules in the current viewport.
+> Fixed Media Rules and Keyframes on Firefox Android by using a reusable page runtime instead of repeatedly injecting the same helper scripts.
 
 ## Deutsch
 
 Versionshinweise:
 
-> Neu sind ein Filter für berechnete Eigenschaften nach Name oder Wert sowie der Übereinstimmungsstatus von Medienregeln in der aktuellen Ansicht.
+> Media Rules und Keyframes funktionieren unter Firefox Android wieder zuverlässig. Seitenoperationen nutzen jetzt eine wiederverwendbare Laufzeit statt wiederholter Skriptinjektionen.
 
 ## Español
 
 Notas de la versión:
 
-> Se añadieron un filtro de propiedades calculadas por nombre o valor y el estado de coincidencia de Media Rules en la vista actual.
+> Se corrigieron Media Rules y Keyframes en Firefox Android. Las operaciones usan ahora un entorno reutilizable en la página en lugar de reinyectar scripts.
 
 ## 日本語
 
 リリースノート:
 
-> 計算済みプロパティを名前または値で絞り込む機能と、現在の表示環境におけるMedia Rulesの一致状態を追加しました。
+> Firefox AndroidでMedia RulesとKeyframesが安定して動作するよう、同じスクリプトの再注入をやめて再利用可能なページランタイムに切り替えました。
 
 ## Português do Brasil
 
 Notas da versão:
 
-> Adicionamos filtro de propriedades computadas por nome ou valor e o status de correspondência das Media Rules na visualização atual.
+> Corrigimos Media Rules e Keyframes no Firefox Android. As operações agora usam um runtime reutilizável na página em vez de reinjetar scripts.
 
 ## Українська
 
 Примітки до випуску:
 
-> Додано фільтрування обчислених властивостей за назвою або значенням і статус відповідності Media Rules поточному вікну перегляду.
+> Виправлено Media Rules і Keyframes у Firefox Android. Операції тепер використовують повторно використовуване середовище виконання сторінки замість повторних ін’єкцій скриптів.

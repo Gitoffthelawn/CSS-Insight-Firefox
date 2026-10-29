@@ -80,7 +80,10 @@ function readDeclaredStyles(styleSheets, styleElements) {
   assert.equal(vm.runInContext('typeof formatRule', context), 'undefined');
   assert.equal(vm.runInContext('typeof collectStyleSheets', context), 'undefined');
 
-  return vm.runInContext(source, context);
+  vm.runInContext(source, context);
+  return context.__CSS_INSIGHT_OPERATIONS__.getDeclaredStyles(
+    context.__CSS_INSIGHT_DATA__
+  );
 }
 
 test('describes linked, inline, preview and constructed style sources', () => {

@@ -3,7 +3,7 @@
   "name": "__MSG_chromename__",
   "short_name": "__MSG_shortname__",
   "description": "__MSG_description__",
-  "version": "1.23.3",
+  "version": "1.23.4",
   "browser_specific_settings": {
     "gecko": {
       "id": "{3cf44542-4a82-4868-a366-be8126b42458}",
@@ -44,7 +44,16 @@
         "<all_urls>"
       ],
       "js": [
+        "scripts/formatRule.js",
         "scripts/inspectionTarget.js",
+        "scripts/cssRuleWalker.js",
+        "scripts/getDeclaredStyles.js",
+        "scripts/getComputedStyles.js",
+        "scripts/getMediaRules.js",
+        "scripts/getKeyframesRules.js",
+        "scripts/applyStyles.js",
+        "scripts/showModalWithCSSData.js",
+        "scripts/inspectionBridge.js",
         "scripts/getTagName.js"
       ],
       "all_frames": true,

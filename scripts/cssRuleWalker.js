@@ -1,3 +1,4 @@
+(() => {
 function collectStyleSheets(root = document) {
   const sheets = [];
   const seen = new Set();
@@ -435,3 +436,4 @@ globalThis.__CSS_INSIGHT_STYLE_UTILS__ = {
   splitSelectorList,
   walkStyleSheets
 };
+})();

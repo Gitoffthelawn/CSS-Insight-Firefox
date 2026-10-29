@@ -1,3 +1,4 @@
+(() => {
 function getComputedStyles(request) {
   const INVALID_SELECTOR = browser.i18n.getMessage('invalidselector');
   const NOT_FOUND = browser.i18n.getMessage('notfound');
@@ -52,4 +53,8 @@ function getComputedStyles(request) {
   return `${header}\n\n${declarations}`.trim();
 }
 
-getComputedStyles(globalThis.__CSS_INSIGHT_DATA__);
+globalThis.__CSS_INSIGHT_OPERATIONS__ = {
+  ...globalThis.__CSS_INSIGHT_OPERATIONS__,
+  getComputedStyles
+};
+})();

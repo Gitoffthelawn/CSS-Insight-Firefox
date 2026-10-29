@@ -1,3 +1,4 @@
+(() => {
 function showModalWithCSSData(cssData) {
   const modalKey = '__CSS_INSIGHT_DETAILS_MODAL__';
   globalThis[modalKey]?.close?.();
@@ -139,4 +140,8 @@ function showModalWithCSSData(cssData) {
   return true;
 }
 
-showModalWithCSSData(globalThis.__CSS_INSIGHT_DATA__);
+globalThis.__CSS_INSIGHT_OPERATIONS__ = {
+  ...globalThis.__CSS_INSIGHT_OPERATIONS__,
+  showModalWithCSSData
+};
+})();

@@ -141,22 +141,24 @@ test('applies previews independently to the document and an open shadow root', (
   });
 
   vm.runInContext(targetSource, context);
-  assert.equal(vm.runInContext(applyStylesSource, context), true);
+  vm.runInContext(applyStylesSource, context);
+  const applyStyles = context.__CSS_INSIGHT_OPERATIONS__.applyStyles;
+  assert.equal(applyStyles(context.__CSS_INSIGHT_DATA__), true);
   context.__CSS_INSIGHT_DATA__ = {
     cssText: '.card { color: blue; }',
     shadowPath: ['app-shell']
   };
-  assert.equal(vm.runInContext(applyStylesSource, context), true);
+  assert.equal(applyStyles(context.__CSS_INSIGHT_DATA__), true);
 
   assert.deepEqual(appended.map(entry => entry.root), ['document', 'shadow']);
   assert.equal(appended[0].element.textContent, '.card { color: red; }');
   assert.equal(appended[1].element.textContent, '.card { color: blue; }');
 
   context.__CSS_INSIGHT_DATA__ = { remove: true, shadowPath: ['app-shell'] };
-  assert.equal(vm.runInContext(applyStylesSource, context), true);
+  assert.equal(applyStyles(context.__CSS_INSIGHT_DATA__), true);
   assert.equal(appended[1].element.isConnected, false);
   assert.equal(appended[0].element.isConnected, true);
-  assert.equal(vm.runInContext(applyStylesSource, context), false);
+  assert.equal(applyStyles(context.__CSS_INSIGHT_DATA__), false);
 });
 
 test('declares and routes iframe picker contexts without new permissions', () => {

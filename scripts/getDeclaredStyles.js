@@ -1,3 +1,4 @@
+(() => {
 function sanitizeStyleSource(value) {
   return String(value)
     .replace(/\*\//g, '* /')
@@ -95,4 +96,8 @@ function getDeclaredStyles(request = 'body') {
   return result.trim() || `/* ${NO_RULES} "${safeSelector}" */`;
 }
 
-getDeclaredStyles(globalThis.__CSS_INSIGHT_DATA__);
+globalThis.__CSS_INSIGHT_OPERATIONS__ = {
+  ...globalThis.__CSS_INSIGHT_OPERATIONS__,
+  getDeclaredStyles
+};
+})();

@@ -97,12 +97,13 @@ Run `npm run build`, then load `dist/firefox/manifest.json` through `about:debug
 ## Package and permissions
 
 - Confirm the extension requests `storage`, `tabs`, `activeTab`, `scripting` and all-sites host access.
-- Confirm the picker content controller remains idle until **Pick an Element** is selected.
+- Confirm the picker content controller remains idle until **Pick an Element** is selected and page operations use the resident inspection runtime.
 - Confirm the manifest content script uses `all_frames`, `match_about_blank` and `match_origin_as_fallback` without adding permissions.
 - Confirm Firefox uses a non-persistent background event page, not a service worker.
 - Run `npm run check` and confirm all automated tests pass.
-- Update from `1.23.2` to `1.23.3` and confirm no release-notes tab opens. Simulate a minor-version update and confirm the localized release-notes page opens once.
+- On Firefox Android, reload an already open test page once after installing the update, then run Media Rules and Keyframes repeatedly on at least two sites.
+- Update from `1.23.3` to `1.23.4` and confirm no release-notes tab opens. Simulate a minor-version update and confirm the localized release-notes page opens once.
 - If `web-ext` is installed, run `web-ext lint --warnings-as-errors` before submitting to AMO.
-- Run `unzip -t dist/CSS-Insight-firefox-1.23.3-amo.zip`.
-- Run `unzip -t dist/CSS-Insight-firefox-1.23.3-source.zip` and confirm `manifest.json`, `package.json`, `scripts/` and `tests/` are at the ZIP root.
+- Run `unzip -t dist/CSS-Insight-firefox-1.23.4-amo.zip`.
+- Run `unzip -t dist/CSS-Insight-firefox-1.23.4-source.zip` and confirm `manifest.json`, `package.json`, `scripts/` and `tests/` are at the ZIP root.
 - Confirm the AMO archive contains no tests, build tools, `.gitignore`, `metadata.json`, or obsolete scripts.

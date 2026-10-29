@@ -1,3 +1,4 @@
+(() => {
 function getKeyframes(request = {}) {
   const NO_KEYFRAMES = browser.i18n.getMessage('nokeyframes');
   const TARGET_UNAVAILABLE = browser.i18n.getMessage('targetunavailable');
@@ -25,4 +26,8 @@ function getKeyframes(request = {}) {
   return keyframes ? keyframes.trim() : `/* ${NO_KEYFRAMES} */`;
 }
 
-getKeyframes(globalThis.__CSS_INSIGHT_DATA__);
+globalThis.__CSS_INSIGHT_OPERATIONS__ = {
+  ...globalThis.__CSS_INSIGHT_OPERATIONS__,
+  getKeyframes
+};
+})();

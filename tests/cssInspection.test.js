@@ -79,6 +79,11 @@ function loadUtilities(context) {
   return vm.runInContext('__CSS_INSIGHT_STYLE_UTILS__', context);
 }
 
+function runOperation(context, source, operation, data = context.__CSS_INSIGHT_DATA__) {
+  vm.runInContext(source, context);
+  return context.__CSS_INSIGHT_OPERATIONS__[operation](data);
+}
+
 test('combines regular and adopted stylesheets without duplicates', () => {
   const shared = { cssRules: [] };
   const adopted = { cssRules: [] };
@@ -200,7 +205,7 @@ test('declared styles use real selector matching and include adopted sheets', ()
   const context = makeContext(document);
 
   loadUtilities(context);
-  const result = vm.runInContext(declaredStylesSource, context);
+  const result = runOperation(context, declaredStylesSource, 'getDeclaredStyles');
 
   assert.match(result, /@media \(min-width: 30rem\)/);
   assert.match(result, /\.card \{\s*color: red;/);
@@ -209,7 +214,7 @@ test('declared styles use real selector matching and include adopted sheets', ()
   assert.doesNotMatch(result, /\.other, \.unrelated/);
 
   context.__CSS_INSIGHT_DATA__ = '[';
-  const invalidResult = vm.runInContext(declaredStylesSource, context);
+  const invalidResult = runOperation(context, declaredStylesSource, 'getDeclaredStyles');
   assert.match(invalidResult, /Invalid CSS selector/);
 });
 
@@ -223,7 +228,7 @@ test('computed styles return a stable message for an invalid selector', () => {
   context.window = { getComputedStyle() {} };
   vm.runInContext(`(() => { ${inspectionTargetSource} })()`, context);
 
-  const result = vm.runInContext(computedStylesSource, context);
+  const result = runOperation(context, computedStylesSource, 'getComputedStyles');
   assert.match(result, /Invalid CSS selector/);
 });
 
@@ -283,10 +288,10 @@ test('declared and computed styles resolve the selected open shadow root', () =>
   };
 
   loadUtilities(context);
-  const declaredResult = vm.runInContext(declaredStylesSource, context);
-  const computedResult = vm.runInContext(computedStylesSource, context);
-  const mediaResult = vm.runInContext(mediaRulesSource, context);
-  const keyframesResult = vm.runInContext(keyframesRulesSource, context);
+  const declaredResult = runOperation(context, declaredStylesSource, 'getDeclaredStyles');
+  const computedResult = runOperation(context, computedStylesSource, 'getComputedStyles');
+  const mediaResult = runOperation(context, mediaRulesSource, 'getMediaRules');
+  const keyframesResult = runOperation(context, keyframesRulesSource, 'getKeyframes');
 
   assert.match(declaredResult, /@media \(width > 10rem\)/);
   assert.match(declaredResult, /\.control \{\s*color: rebeccapurple;/);
@@ -323,8 +328,8 @@ test('media and keyframe collectors retain nested grouping context', () => {
   });
 
   loadUtilities(context);
-  const mediaResult = vm.runInContext(mediaRulesSource, context);
-  const keyframesResult = vm.runInContext(keyframesRulesSource, context);
+  const mediaResult = runOperation(context, mediaRulesSource, 'getMediaRules');
+  const keyframesResult = runOperation(context, keyframesRulesSource, 'getKeyframes');
 
   assert.match(mediaResult, /@layer components[\s\S]*@media \(width > 20rem\)/);
   assert.match(mediaResult, /Media conditions do not match the current environment/);
@@ -345,7 +350,7 @@ test('computed styles can return structured properties for popup filtering', () 
 
   vm.runInContext(`(() => { ${inspectionTargetSource} })()`, context);
   const result = JSON.parse(JSON.stringify(
-    vm.runInContext(computedStylesSource, context)
+    runOperation(context, computedStylesSource, 'getComputedStyles')
   ));
 
   assert.equal(result.type, 'css-insight-computed-styles');
@@ -353,4 +358,20 @@ test('computed styles can return structured properties for popup filtering', () 
     { name: 'color', value: 'rgb(1, 2, 3)' },
     { name: 'display', value: 'grid' }
   ]);
+});
+
+test('helper and collector scripts can be evaluated repeatedly in one content scope', () => {
+  const context = makeContext({ styleSheets: [], adoptedStyleSheets: [] });
+
+  assert.doesNotThrow(() => {
+    loadUtilities(context);
+    loadUtilities(context);
+    vm.runInContext(mediaRulesSource, context);
+    vm.runInContext(mediaRulesSource, context);
+    vm.runInContext(keyframesRulesSource, context);
+    vm.runInContext(keyframesRulesSource, context);
+  });
+
+  assert.equal(typeof context.__CSS_INSIGHT_OPERATIONS__.getMediaRules, 'function');
+  assert.equal(typeof context.__CSS_INSIGHT_OPERATIONS__.getKeyframes, 'function');
 });
