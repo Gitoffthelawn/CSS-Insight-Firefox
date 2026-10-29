@@ -16,6 +16,14 @@ function applyStyles(request) {
 
   let styleElement = previewStyles.get(root);
 
+  if (request?.remove === true) {
+    if (!styleElement?.isConnected) return false;
+
+    styleElement.remove();
+    previewStyles.delete(root);
+    return true;
+  }
+
   if (!styleElement?.isConnected) {
     styleElement = document.createElement('style');
     styleElement.dataset.cssInsightPreview = 'true';

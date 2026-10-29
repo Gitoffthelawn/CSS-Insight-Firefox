@@ -2,42 +2,37 @@ function showModalWithCSSData(cssData) {
   const modalKey = '__CSS_INSIGHT_DETAILS_MODAL__';
   globalThis[modalKey]?.close?.();
 
+  const previouslyFocused = document.activeElement;
   const host = document.createElement('div');
-  host.setAttribute('role', 'dialog');
-  host.setAttribute('aria-modal', 'true');
-  host.setAttribute('aria-label', browser.i18n.getMessage('infoheader'));
   host.style.setProperty('all', 'initial', 'important');
-  host.style.setProperty('position', 'fixed', 'important');
-  host.style.setProperty('inset', '0', 'important');
-  host.style.setProperty('display', 'block', 'important');
-  host.style.setProperty('z-index', '2147483647', 'important');
-
   const shadow = host.attachShadow({ mode: 'closed' });
   const style = document.createElement('style');
   style.textContent = `
     :host { color-scheme: light; }
-    .backdrop {
+    dialog {
+      box-sizing: border-box;
+      width: min(760px, calc(100vw - 32px));
+      height: min(82vh, 900px);
+      max-width: none;
+      max-height: none;
+      padding: 0;
+      overflow: hidden;
+      border: 0;
+      border-radius: 10px;
+      background: #fff;
+      color: #102a43;
+      box-shadow: 0 18px 60px rgba(0, 0, 0, 0.35);
+      font-family: system-ui, sans-serif;
+    }
+    dialog::backdrop { background: rgba(0, 0, 0, 0.55); }
+    .panel {
       display: flex;
       box-sizing: border-box;
       width: 100%;
       height: 100%;
       padding: 16px;
-      align-items: center;
-      justify-content: center;
-      background: rgba(0, 0, 0, 0.55);
-      font-family: system-ui, sans-serif;
-    }
-    .panel {
-      display: flex;
-      box-sizing: border-box;
-      width: min(760px, 100%);
-      height: min(82vh, 900px);
-      padding: 16px;
       flex-direction: column;
       gap: 12px;
-      border-radius: 10px;
-      background: #fff;
-      box-shadow: 0 18px 60px rgba(0, 0, 0, 0.35);
     }
     textarea {
       box-sizing: border-box;
@@ -54,7 +49,7 @@ function showModalWithCSSData(cssData) {
     }
     textarea:focus-visible,
     button:focus-visible {
-      outline: 3px solid #62d9ff;
+      outline: 3px solid #0077a3;
       outline-offset: 2px;
     }
     .actions {
@@ -75,8 +70,9 @@ function showModalWithCSSData(cssData) {
     button:hover { background: #0056b3; }
   `;
 
-  const backdrop = document.createElement('div');
-  backdrop.className = 'backdrop';
+  const dialog = document.createElement('dialog');
+  dialog.setAttribute('aria-label', browser.i18n.getMessage('infoheader'));
+  dialog.dir = browser.i18n.getMessage('@@bidi_dir') || 'ltr';
   const panel = document.createElement('div');
   panel.className = 'panel';
   const textArea = document.createElement('textarea');
@@ -93,20 +89,23 @@ function showModalWithCSSData(cssData) {
   copyButton.type = 'button';
   copyButton.textContent = browser.i18n.getMessage('copytext');
   let modalController = null;
+  let closed = false;
 
   function closeModal() {
-    document.removeEventListener('keydown', onKeyDown, true);
+    if (closed) return;
+    closed = true;
+
+    if (dialog.open) dialog.close();
     host.remove();
 
     if (globalThis[modalKey] === modalController) {
       delete globalThis[modalKey];
     }
-  }
 
-  function onKeyDown(event) {
-    if (event.key === 'Escape') {
-      event.preventDefault();
-      closeModal();
+    try {
+      previouslyFocused?.focus?.({ preventScroll: true });
+    } catch {
+      previouslyFocused?.focus?.();
     }
   }
 
@@ -119,18 +118,22 @@ function showModalWithCSSData(cssData) {
       copyButton.textContent = browser.i18n.getMessage('copyfailed');
     }
   });
-  backdrop.addEventListener('click', event => {
-    if (event.target === backdrop) closeModal();
+  dialog.addEventListener('cancel', event => {
+    event.preventDefault();
+    closeModal();
   });
-  document.addEventListener('keydown', onKeyDown, true);
+  dialog.addEventListener('click', event => {
+    if (event.target === dialog) closeModal();
+  });
 
   actions.append(closeButton, copyButton);
   panel.append(textArea, actions);
-  backdrop.appendChild(panel);
-  shadow.append(style, backdrop);
+  dialog.appendChild(panel);
+  shadow.append(style, dialog);
   (document.documentElement || document.body).appendChild(host);
   modalController = { close: closeModal, host };
   globalThis[modalKey] = modalController;
+  dialog.showModal();
   closeButton.focus();
 
   return true;

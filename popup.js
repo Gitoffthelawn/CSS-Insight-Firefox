@@ -32,6 +32,7 @@ const container = document.querySelector('.container');
 const statusMessage = document.getElementById('statusMessage');
 const trackTagBtn = document.getElementById('trackTagBtn');
 const tagInput = document.getElementById('tagInput');
+const targetContextValue = document.getElementById('targetContextValue');
 const styleDataElement = document.getElementById('styleData');
 const pageActionElements = Array.from(document.querySelectorAll('[data-page-action]'));
 
@@ -242,6 +243,36 @@ function setBusy(value) {
   refreshDisabledState();
 }
 
+function getTargetPageLabel(tab) {
+  const rawUrl = tab?.url || tab?.pendingUrl || '';
+
+  try {
+    const url = new URL(rawUrl);
+    return url.hostname || url.protocol.replace(':', '');
+  } catch {
+    return rawUrl || t('targetunavailable');
+  }
+}
+
+function updateTargetContextUi() {
+  if (!targetTab) {
+    targetContextValue.textContent = t('targetunavailable');
+    return;
+  }
+
+  const contextParts = [getTargetPageLabel(targetTab)];
+
+  if (targetFrameId > 0) {
+    contextParts.push(`${t('iframecontext')} ${targetFrameId}`);
+  }
+
+  if (targetShadowPath.length) {
+    contextParts.push(targetShadowPath.join(' >>> '));
+  }
+
+  targetContextValue.textContent = contextParts.join(' › ');
+}
+
 function updatePickerUi() {
   clearTimeout(pickerExpiryTimer);
   pickerExpiryTimer = 0;
@@ -287,7 +318,23 @@ async function adoptResultTarget() {
     }
   } catch {
     // A closed result tab falls back to the most recent eligible page.
+  } finally {
+    updateTargetContextUi();
   }
+}
+
+async function clearWindowPickerResult() {
+  const localResult = await storageGet('local', PICKER_RESULT_KEY);
+  const results = normalizePickerResults(localResult[PICKER_RESULT_KEY]);
+  delete results[String(currentWindowId)];
+
+  if (Object.keys(results).length) {
+    await storageSet('local', { [PICKER_RESULT_KEY]: results });
+  } else {
+    await storageRemove('local', PICKER_RESULT_KEY);
+  }
+
+  pickerResult = normalizePickerResult(null);
 }
 
 function formatOperationError(error, tab) {
@@ -340,6 +387,7 @@ async function refreshTarget() {
       targetFrameId = 0;
       targetDocumentId = null;
       targetShadowPath = [];
+      updateTargetContextUi();
     }
   } catch {
     // Page operations will report a precise error if no target remains.
@@ -391,6 +439,7 @@ async function getLiveTargetTab() {
       targetFrameId = 0;
       targetDocumentId = null;
       targetShadowPath = [];
+      updateTargetContextUi();
     }
   }
 
@@ -538,6 +587,37 @@ document.getElementById('injectCSSBtn').addEventListener('click', async () => {
   });
 });
 
+document.getElementById('removeRuleBtn').addEventListener('click', async () => {
+  await runPageOperation(async context => {
+    const removed = await executeScript(
+      context.tab.id,
+      'scripts/applyStyles.js',
+      { remove: true, shadowPath: context.shadowPath },
+      context.frameId,
+      context.documentId
+    );
+    showStatus(t(removed ? 'stylesremoved' : 'nostylespreview'), removed ? 'success' : 'info');
+  });
+});
+
+document.getElementById('useActivePageBtn').addEventListener('click', async () => {
+  if (isBusy) return;
+
+  setBusy(true);
+  clearStatus();
+
+  try {
+    await clearWindowPickerResult();
+    await refreshTarget();
+    assertPageAccess(targetTab);
+    showStatus(t('activepageselected'), 'success');
+  } catch (error) {
+    showStatus(formatOperationError(error, targetTab), 'error');
+  } finally {
+    setBusy(false);
+  }
+});
+
 document.getElementById('hideCssInfo').addEventListener('click', () => {
   document.getElementById('cssInfo').classList.add('hidden');
 });
@@ -628,6 +708,7 @@ async function initialize() {
     currentWindowId = await getCurrentWindowId();
     pickerResult = await loadPickerResult();
     updatePickerUi();
+    updateTargetContextUi();
     await refreshPopupContext();
   } catch (error) {
     showStatus(formatOperationError(error), 'error');

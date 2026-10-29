@@ -10,10 +10,12 @@ Run `npm run build`, then load `dist/firefox/manifest.json` through `about:debug
 
 ## Localization
 
-- Run `npm run check` and confirm all 49 message keys are present in `de`, `en`, `es`, `ja`, `pt_BR` and `uk`.
+- Run `npm run check` and confirm all 74 message keys are present in `de`, `en`, `es`, `ja`, `pt_BR` and `uk`.
 - Switch the browser UI through German, Spanish, Japanese, Brazilian Portuguese and Ukrainian, restarting the browser when prompted. Confirm the extension name, description, popup controls, picker tooltips, status messages and on-page details dialog use the selected locale.
 - In every locale, trigger an invalid selector, a protected-page message, a picker timeout and an unavailable iframe or shadow-root target. Confirm no empty labels or raw localization keys appear.
 - Confirm long German and Portuguese labels wrap vertically without changing the desktop popup width.
+- Open the update page in every locale and confirm its title, features, tips, links and Close button are translated.
+- Inspect the popup and update page DOM and confirm `lang` matches the browser UI locale and `dir` matches its writing direction.
 
 ## Page access
 
@@ -30,6 +32,7 @@ Run `npm run build`, then load `dist/firefox/manifest.json` through `about:debug
 - Select **Pick an Element**. Confirm the extension interface stays open and no webpage is activated automatically.
 - Switch to any supported webpage in the same window, then click a normal element. Confirm the picker stops automatically in all tabs.
 - Return to CSS Insight and confirm the generated selector appears without refreshing the popup.
+- Confirm **Current target** shows the selected page, iframe and open shadow-root path. Select **Use active page** and confirm the hidden frame and shadow context is cleared.
 - Pick a link. Confirm the selecting click does not navigate and the link works normally afterward.
 - Pick an element whose class contains punctuation, such as a utility class with `:`. Confirm the generated selector is accepted by **Get Computed Styles**.
 - Start the picker, cancel it from the popup, then start it again and complete a selection.
@@ -52,8 +55,9 @@ Run `npm run build`, then load `dist/firefox/manifest.json` through `about:debug
 - Enter an invalid selector in both Declared Styles and Computed Styles. Confirm the localized validation result is shown without breaking the popup.
 - Retrieve media rules and keyframes on a page that contains them.
 - Copy retrieved CSS and save it to `styles.css`.
-- Open **View More Details**, copy from the page dialog, close it with Escape and close it by selecting the backdrop.
+- Open **View More Details**, copy from the native page dialog, close it with Escape and close it by selecting the backdrop. Confirm Tab stays inside the dialog and focus returns to the previously focused page element.
 - Apply a CSS rule, then apply a different rule. Confirm the second preview replaces the first CSS Insight style element.
+- Select **Remove Preview** and confirm the selected document or shadow root returns to its original styling without a reload. Select it again and confirm the popup reports that no preview is active.
 
 ## Iframe and shadow-root targets
 
@@ -93,6 +97,8 @@ Run `npm run build`, then load `dist/firefox/manifest.json` through `about:debug
 - Confirm the manifest content script uses `all_frames`, `match_about_blank` and `match_origin_as_fallback` without adding permissions.
 - Confirm Firefox uses a non-persistent background event page, not a service worker.
 - Run `npm run check` and confirm all automated tests pass.
-- Run `unzip -t dist/CSS-Insight-firefox-1.23.1-amo.zip`.
-- Run `unzip -t dist/CSS-Insight-firefox-1.23.1-source.zip` and confirm `manifest.json`, `package.json`, `scripts/` and `tests/` are at the ZIP root.
+- Update from `1.23.1` to `1.23.2` and confirm no release-notes tab opens. Simulate a minor-version update and confirm the localized release-notes page opens once.
+- If `web-ext` is installed, run `web-ext lint --warnings-as-errors` before submitting to AMO.
+- Run `unzip -t dist/CSS-Insight-firefox-1.23.2-amo.zip`.
+- Run `unzip -t dist/CSS-Insight-firefox-1.23.2-source.zip` and confirm `manifest.json`, `package.json`, `scripts/` and `tests/` are at the ZIP root.
 - Confirm the AMO archive contains no tests, build tools, `.gitignore`, `metadata.json`, or obsolete scripts.

@@ -12,6 +12,7 @@ function createEvent() {
 
 function installBrowserMock({ silentMessage = () => false } = {}) {
   const stored = {};
+  const createdTabs = [];
   const storageWrites = [];
   const messages = [];
   const tabs = [
@@ -62,7 +63,9 @@ function installBrowserMock({ silentMessage = () => false } = {}) {
 
         return { source: 'css-insight-picker', ok: true };
       },
-      async create() {},
+      async create(properties) {
+        createdTabs.push(structuredClone(properties));
+      },
       async remove() {},
       onActivated: events.activated,
       onUpdated: events.updated,
@@ -74,7 +77,7 @@ function installBrowserMock({ silentMessage = () => false } = {}) {
       }
     },
     runtime: {
-      getManifest: () => ({ version: '1.23.1' }),
+      getManifest: () => ({ version: '1.23.2' }),
       getURL: path => `moz-extension://test/${path}`,
       onMessage: events.message,
       onStartup: events.startup,
@@ -82,7 +85,7 @@ function installBrowserMock({ silentMessage = () => false } = {}) {
     }
   };
 
-  return { events, messages, stored, storageWrites, tabs };
+  return { createdTabs, events, messages, stored, storageWrites, tabs };
 }
 
 function settleWithin(promise, timeoutMs = 1_500) {
@@ -201,6 +204,23 @@ test('a silent tab cannot permanently block a later picker session', async t => 
   assert.ok(firstStopMessages.every(entry =>
     entry.message.token === firstArm.session.token
   ));
+});
+
+test('opens release notes for feature updates but keeps patch updates silent', async t => {
+  const mock = installBrowserMock();
+  t.after(() => { delete globalThis.browser; });
+
+  const moduleUrl = new URL('../scripts/service_worker.js', import.meta.url);
+  moduleUrl.searchParams.set('update-page-test', `${Date.now()}-${Math.random()}`);
+  await import(moduleUrl);
+
+  mock.events.installed.listener({ reason: 'update', previousVersion: '1.23.1' });
+  assert.equal(mock.createdTabs.length, 0);
+
+  mock.events.installed.listener({ reason: 'update', previousVersion: '1.22.9' });
+  assert.deepEqual(mock.createdTabs, [{
+    url: 'moz-extension://test/update/update.html?version=1.23.2'
+  }]);
 });
 
 test('remembering the same target does not rewrite local storage', async t => {

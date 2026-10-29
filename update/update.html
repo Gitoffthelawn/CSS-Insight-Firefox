@@ -1,47 +1,53 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>What's New in CSS Insight</title>
+  <title data-i18n="updatepagetitle"></title>
   <link rel="stylesheet" href="./update.css">
 </head>
 <body>
   <div class="container">
     <header>
-      <img src="../images/icon-512.png" alt="CSS Insight logo" class="logo">
+      <img src="../images/icon-512.png" alt="" data-i18n-alt="updatelogoalt" class="logo">
       <div>
         <h1>CSS Insight</h1>
-        <h2>Update to version <span id="version"></span></h2>
+        <h2><span data-i18n="updateversion"></span> <span id="version"></span></h2>
       </div>
     </header>
 
     <main>
       <section>
-        <h3>🆕 New Features</h3>
-        <ul id="features"></ul>
+        <h3 data-i18n="updatenewfeatures"></h3>
+        <ul>
+          <li data-i18n="updatefeaturelocales"></li>
+          <li data-i18n="updatefeaturetarget"></li>
+          <li data-i18n="updatefeaturepreview"></li>
+          <li data-i18n="updatefeatureaccessibility"></li>
+        </ul>
       </section>
 
       <section>
-        <h3>💡 Usage Tips</h3>
-        <p>• To inspect an element, select "Pick an Element", switch to any supported webpage in the same window and click or tap the element. The first selection stops the picker everywhere.</p>
-        <p>• Use the "Apply Rule" button to open a field for entering your own CSS rules.</p>
+        <h3 data-i18n="updateusagetips"></h3>
+        <p data-i18n="updatetippicker"></p>
+        <p data-i18n="updatetiprule"></p>
       </section>
 
       <section>
-        <h3>🙏 Support the Project</h3>
-        <p>Enjoying the extension? Leave a <a href="https://addons.mozilla.org/firefox/addon/css-insight/" target="_blank" rel="noopener noreferrer">review on Firefox Add-ons</a> or reach out to <a href="mailto:markalexi@proton.me" target="_top">markalexi@proton.me</a> with suggestions.</p>
+        <h3 data-i18n="updatesupport"></h3>
+        <p><span data-i18n="updatesupportprompt"></span> <a href="https://addons.mozilla.org/firefox/addon/css-insight/" target="_blank" rel="noopener noreferrer" data-i18n="updatereview"></a>.</p>
+        <p><span data-i18n="updatefeedbackprompt"></span> <a href="mailto:markalexi@proton.me">markalexi@proton.me</a>.</p>
       </section>
 
       <section>
-        <h3>🐾 More Tools</h3>
-        <p>Stay focused with <a href="https://blockdistraction.com/" target="_blank" rel="noopener noreferrer">BlockDistraction</a>.</p>
-        <p>Discover more privacy-focused tools at <a href="https://markdigital.cc" target="_blank" rel="noopener noreferrer">Mark Digital</a>.</p>
+        <h3 data-i18n="updatemoretools"></h3>
+        <p><span data-i18n="updatefocusprompt"></span> <a href="https://blockdistraction.com/" target="_blank" rel="noopener noreferrer">BlockDistraction</a>.</p>
+        <p><span data-i18n="updatetoolsprompt"></span> <a href="https://markalexi.com/" target="_blank" rel="noopener noreferrer">MarkAlexI</a>.</p>
       </section>
     </main>
 
     <footer>
-      <button id="close-btn" type="button">Close</button>
+      <button id="close-btn" type="button" data-i18n="close"></button>
     </footer>
   </div>
   <script src="./update.js"></script>

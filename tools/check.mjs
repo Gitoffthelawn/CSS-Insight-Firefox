@@ -102,6 +102,14 @@ check(manifest.browser_specific_settings?.gecko?.id ===
 check(!('id' in (manifest.browser_specific_settings?.gecko_android || {})),
   'gecko_android does not support a separate extension ID.');
 check(Boolean(metadata.summary?.['en-US']), 'AMO metadata must include an English summary.');
+const metadataLocales = ['de', 'en-US', 'es', 'ja', 'pt-BR', 'uk'];
+check(JSON.stringify(Object.keys(metadata.summary || {}).sort()) ===
+  JSON.stringify([...metadataLocales].sort()),
+  `AMO summaries must be present for: ${metadataLocales.join(', ')}.`);
+for (const locale of metadataLocales) {
+  check([...metadata.summary[locale]].length <= 250,
+    `${locale} AMO summary exceeds 250 characters.`);
+}
 check(Array.isArray(metadata.categories?.firefox) &&
   metadata.categories.firefox.includes('web-development'),
   'AMO metadata must include the Firefox web-development category.');
@@ -129,17 +137,26 @@ const usedMessageKeys = new Set();
 for (const file of allFiles.filter(file => file.endsWith('.html') || file.endsWith('.js'))) {
   const source = await readFile(file, 'utf8');
 
-  for (const match of source.matchAll(/data-i18n(?:-placeholder|-aria-label)?=["']([^"']+)["']/g)) {
+  for (const match of source.matchAll(/data-i18n(?:-placeholder|-aria-label|-alt)?=["']([^"']+)["']/g)) {
     usedMessageKeys.add(match[1]);
   }
 
   for (const match of source.matchAll(/(?:\bt|\.getMessage)\(\s*["']([^"']+)["']/g)) {
-    usedMessageKeys.add(match[1]);
+    if (!match[1].startsWith('@@')) usedMessageKeys.add(match[1]);
   }
 }
 
 for (const match of JSON.stringify(manifest).matchAll(/__MSG_([^_]+)__/g)) {
   usedMessageKeys.add(match[1]);
+}
+
+for (const key of [
+  'pageaccessmissing',
+  'pageaccessmozilla',
+  'stylesremoved',
+  'nostylespreview'
+]) {
+  usedMessageKeys.add(key);
 }
 
 for (const key of usedMessageKeys) {
@@ -194,19 +211,37 @@ check(/ACTIONS\.selectElement/.test(pickerSource),
   'The content picker must submit a tokenized selection to the background.');
 check(/browser\.runtime\.onMessage/.test(pickerSource), 'Picker must use the Firefox browser API.');
 const popupSource = await readFile(path.join(root, 'popup.js'), 'utf8');
+const popupHtml = await readFile(path.join(root, 'popup.html'), 'utf8');
+const updateHtml = await readFile(path.join(root, 'update/update.html'), 'utf8');
+const updateSource = await readFile(path.join(root, 'update/update.js'), 'utf8');
+const modalSource = await readFile(path.join(root, 'scripts/showModalWithCSSData.js'), 'utf8');
 check(!/window\.close\s*\(/.test(popupSource),
   'The popup must not close its own tab after starting the picker.');
 check(!/activateTab\s*\(/.test(popupSource),
   'The popup must not force one target tab to become active.');
 check(/cssInsight:armPicker/.test(popupSource) && /cssInsight:cancelPicker/.test(popupSource),
   'The popup must control the window-scoped picker session.');
+check(/id="targetContextValue"/.test(popupHtml) && /id="useActivePageBtn"/.test(popupHtml),
+  'The popup must expose and reset its inspection target.');
+check(/id="removeRuleBtn"/.test(popupHtml) && /remove:\s*true/.test(popupSource),
+  'The popup must offer explicit CSS preview removal.');
 const backgroundSource = await readFile(path.join(root, 'scripts/service_worker.js'), 'utf8');
 check(/cssInsightPickerSessions/.test(backgroundSource),
   'The background must persist window-scoped picker sessions.');
 check(/broadcastPicker/.test(backgroundSource) && /acceptSelection/.test(backgroundSource),
   'The background must arm all eligible tabs and accept only the winning selection.');
+check(/isFeatureUpdate\(details\.previousVersion, version\)/.test(backgroundSource),
+  'Patch updates must not open a release-notes tab.');
 check(/RESTRICTED_MOZILLA_HOSTS/.test(backgroundSource),
   'The background must preserve Firefox restricted-host handling.');
+check(/@@ui_locale/.test(updateSource) && /@@bidi_dir/.test(updateSource),
+  'The update page must expose its locale and text direction.');
+check(/markalexi\.com/.test(updateHtml) && !/markdigital\.cc|Mark Digital/i.test(updateHtml),
+  'The update page must use the MarkAlexI identity.');
+check(/createElement\('dialog'\)/.test(modalSource) && /dialog\.showModal\(\)/.test(modalSource),
+  'The on-page details view must use a native modal dialog.');
+check(/previouslyFocused\?\.focus/.test(modalSource),
+  'The on-page details dialog must restore focus when closed.');
 
 for (const file of javascriptFiles.filter(file => {
   const relative = path.relative(root, file);

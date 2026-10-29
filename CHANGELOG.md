@@ -1,5 +1,23 @@
 # Changelog
 
+## 1.23.2 - 2026-10-29
+
+### Added
+
+- The popup now shows the current page, iframe and open shadow-root context and can reset inspection to the active page.
+- CSS previews can be removed from the selected document or shadow root without reloading the page.
+
+### Changed
+
+- The update page is fully localized, uses the MarkAlexI identity and opens only for major or minor feature updates, not patch releases.
+- The popup and update page now expose the browser locale and text direction to assistive technology.
+- The on-page details view uses a native modal dialog and restores keyboard focus when closed.
+
+### Development
+
+- Added regression coverage for preview removal, update-page gating, target-context UI and modal focus behavior.
+- Expanded all six locale catalogs from 49 to 74 validated messages.
+
 ## 1.23.1 - 2026-10-28
 
 ### Added

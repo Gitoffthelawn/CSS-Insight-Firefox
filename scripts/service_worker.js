@@ -575,11 +575,20 @@ browser.runtime.onStartup.addListener(() => {
   seedActiveTabs();
 });
 
+function isFeatureUpdate(previousVersion, currentVersion) {
+  const previousMatch = /^(\d+)\.(\d+)/.exec(String(previousVersion || ''));
+  const currentMatch = /^(\d+)\.(\d+)/.exec(String(currentVersion || ''));
+
+  return Boolean(previousMatch && currentMatch) &&
+    (previousMatch[1] !== currentMatch[1] || previousMatch[2] !== currentMatch[2]);
+}
+
 browser.runtime.onInstalled.addListener(details => {
   seedActiveTabs();
 
-  if (details.reason === 'update') {
-    const version = browser.runtime.getManifest().version;
+  const version = browser.runtime.getManifest().version;
+
+  if (details.reason === 'update' && isFeatureUpdate(details.previousVersion, version)) {
     browser.tabs.create({
       url: browser.runtime.getURL(`update/update.html?version=${version}`)
     });

@@ -120,7 +120,12 @@ test('applies previews independently to the document and an open shadow root', (
       }
     },
     createElement() {
-      return { dataset: {}, isConnected: false, textContent: '' };
+      return {
+        dataset: {},
+        isConnected: false,
+        textContent: '',
+        remove() { this.isConnected = false; }
+      };
     },
     querySelector(selector) {
       return selector === 'app-shell' ? host : null;
@@ -146,6 +151,12 @@ test('applies previews independently to the document and an open shadow root', (
   assert.deepEqual(appended.map(entry => entry.root), ['document', 'shadow']);
   assert.equal(appended[0].element.textContent, '.card { color: red; }');
   assert.equal(appended[1].element.textContent, '.card { color: blue; }');
+
+  context.__CSS_INSIGHT_DATA__ = { remove: true, shadowPath: ['app-shell'] };
+  assert.equal(vm.runInContext(applyStylesSource, context), true);
+  assert.equal(appended[1].element.isConnected, false);
+  assert.equal(appended[0].element.isConnected, true);
+  assert.equal(vm.runInContext(applyStylesSource, context), false);
 });
 
 test('declares and routes iframe picker contexts without new permissions', () => {

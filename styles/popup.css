@@ -65,6 +65,39 @@ label {
   color: #0b5949;
 }
 
+.targetContext {
+  margin: 0 0 .75rem;
+  padding: .55rem .65rem;
+  border: 1px solid #6b879d;
+  border-radius: .3rem;
+  background: rgba(255, 255, 255, .7);
+  font-size: .7rem;
+  line-height: 1.35;
+}
+
+.targetContextHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .5rem;
+}
+
+#targetContextValue {
+  display: block;
+  margin-top: .35rem;
+  overflow-wrap: anywhere;
+  color: #334e68;
+}
+
+.compactBtn {
+  width: auto;
+  min-height: 1.8rem;
+  margin: 0;
+  padding: .35rem .5rem;
+  flex: 0 0 auto;
+  font-size: .65rem;
+}
+
 textarea {
   width: 100%;
   height: 10rem;
@@ -161,6 +194,14 @@ input:hover:not(:disabled) {
 
 .apply:hover {
   background-color: #004d40;
+}
+
+.remove {
+  background-color: #9c2f20;
+}
+
+.remove:hover {
+  background-color: #742116;
 }
 
 button:disabled:hover {

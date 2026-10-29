@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 
 <head>
   <meta charset="UTF-8">
@@ -14,6 +14,14 @@
     <h2 data-i18n="mainheader"></h2>
     
     <p id="statusMessage" class="status hidden" role="status" aria-live="polite"></p>
+
+    <section id="targetContext" class="targetContext" aria-labelledby="targetContextLabel">
+      <div class="targetContextHeader">
+        <strong id="targetContextLabel" data-i18n="currenttarget"></strong>
+        <button type="button" id="useActivePageBtn" class="compactBtn" data-i18n="useactivepage" data-page-action></button>
+      </div>
+      <output id="targetContextValue" aria-live="polite"></output>
+    </section>
 
     <button type="button" id="trackTagBtn" data-i18n="tracktagstart" class="track" data-page-action></button>
     
@@ -43,6 +51,7 @@
     <button type="button" id="moreDetailsBtn" class="hidden" data-i18n="moredetails" data-page-action></button>
     
     <button type="button" id="applyRuleBtn" data-i18n="applyrule" class="apply"></button>
+    <button type="button" id="removeRuleBtn" data-i18n="removepreview" class="remove" data-page-action></button>
     <div id="newRule" class="hidden">
       <h3 id="newRuleHeader" data-i18n="newruleheader"></h3>
       <button type="button" id="hideNewRule" class="hideBtn" data-i18n-aria-label="close">×</button>

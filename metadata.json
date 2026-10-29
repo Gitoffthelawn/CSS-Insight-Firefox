@@ -1,6 +1,11 @@
 {
   "summary": {
-    "en-US": "Inspect, copy, and test CSS directly on webpages with a lightweight developer tool for Firefox desktop and Android."
+    "de": "CSS direkt auf Webseiten untersuchen, kopieren und testen. Ein schlankes Entwicklerwerkzeug für Firefox Desktop und Android.",
+    "en-US": "Inspect, copy, and test CSS directly on webpages with a lightweight developer tool for Firefox desktop and Android.",
+    "es": "Inspecciona, copia y prueba CSS directamente en páginas web con una herramienta ligera para Firefox de escritorio y Android.",
+    "ja": "Firefox デスクトップ版と Android 版で、Webページ上のCSSを直接検査、コピー、テストできる軽量な開発者ツールです。",
+    "pt-BR": "Inspecione, copie e teste CSS diretamente nas páginas com uma ferramenta leve para Firefox desktop e Android.",
+    "uk": "Перевіряйте, копіюйте й тестуйте CSS безпосередньо на вебсторінках у Firefox для комп'ютера та Android."
   },
   "categories": {
     "firefox": [
