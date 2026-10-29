@@ -180,8 +180,8 @@ for (const key of usedMessageKeys) {
 }
 
 const englishMessageKeys = Object.keys(messages).sort();
-check(englishMessageKeys.length === 82,
-  `Expected 82 English localization keys, found ${englishMessageKeys.length}.`);
+check(englishMessageKeys.length === 83,
+  `Expected 83 English localization keys, found ${englishMessageKeys.length}.`);
 
 for (const locale of supportedLocales) {
   const localizedMessages = localeMessages[locale];
@@ -231,6 +231,9 @@ check(bridgeSource.includes(`const VERSION = '${manifest.version}'`),
 check(/cssInsight:runPageOperation/.test(commonSource) &&
   /sendTabMessage\([\s\S]*?RUN_PAGE_OPERATION/.test(commonSource),
   'Page operations must use the resident content runtime.');
+check(/request\.instanceId !== instanceId/.test(bridgeSource) &&
+  /instanceId:\s*runtimeInstanceId/.test(commonSource),
+  'Page operations must reject a runtime from a replaced document.');
 check(!/__CSS_INSIGHT_DATA__/.test(commonSource),
   'Page operations must not share arguments through a persistent global value.');
 check(/^\(\(\) => \{/.test(ruleWalkerSource),
@@ -267,6 +270,8 @@ check(/css-insight-computed-styles/.test(computedStylesSource) &&
   'Computed styles must use the structured filter transport.');
 check(/window\.matchMedia/.test(mediaRulesSource) && /mediadoesnotmatch/.test(mediaRulesSource),
   'Media-rule output must report the current condition status.');
+check(/RUNTIME_CHANGED_ERROR_CODE/.test(popupSource) && /t\('runtimechanged'\)/.test(popupSource),
+  'The popup must localize replaced-document failures.');
 const backgroundSource = await readFile(path.join(root, 'scripts/service_worker.js'), 'utf8');
 check(/cssInsightPickerSessions/.test(backgroundSource),
   'The background must persist window-scoped picker sessions.');

@@ -47,6 +47,7 @@
   "pageaccessmozilla": { "message": "Firefoxでは、この保護されたMozillaページを拡張機能で検査できません。" },
   "pageaccessfile": { "message": "Firefoxはこのローカルファイルにアクセスできませんでした。" },
   "operationfailed": { "message": "CSS Insightは操作を完了できませんでした。" },
+  "runtimechanged": { "message": "操作が完了する前にページが変更されました。もう一度お試しください。" },
   "targetunavailable": { "message": "選択したフレームまたはオープンShadow Rootは利用できなくなりました。" },
   "currenttarget": { "message": "現在の対象" },
   "useactivepage": { "message": "アクティブなページを使用" },

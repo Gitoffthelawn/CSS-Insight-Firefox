@@ -47,6 +47,7 @@
   "pageaccessmozilla": { "message": "Firefox erlaubt Erweiterungen nicht, diese geschützte Mozilla-Seite zu untersuchen." },
   "pageaccessfile": { "message": "Firefox konnte nicht auf diese lokale Datei zugreifen." },
   "operationfailed": { "message": "CSS Insight konnte den Vorgang nicht abschließen." },
+  "runtimechanged": { "message": "Die Seite hat sich vor Abschluss des Vorgangs geändert. Bitte versuchen Sie es erneut." },
   "targetunavailable": { "message": "Der ausgewählte Frame oder offene Shadow Root ist nicht mehr verfügbar." },
   "currenttarget": { "message": "Aktuelles Ziel" },
   "useactivepage": { "message": "Aktive Seite verwenden" },

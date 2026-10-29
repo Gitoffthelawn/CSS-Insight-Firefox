@@ -1,4 +1,4 @@
-# Store listing copy for 1.23.4
+# Store listing copy for 1.23.5
 
 Use the localized summaries in `metadata.json` for AMO. The release notes below are ready for the corresponding localized listing fields.
 
@@ -6,34 +6,34 @@ Use the localized summaries in `metadata.json` for AMO. The release notes below 
 
 Release notes:
 
-> Fixed Media Rules and Keyframes on Firefox Android by using a reusable page runtime instead of repeatedly injecting the same helper scripts.
+> Prevented page or frame navigation from redirecting an in-progress CSS operation into a replacement document. The popup now asks you to retry safely when needed.
 
 ## Deutsch
 
 Versionshinweise:
 
-> Media Rules und Keyframes funktionieren unter Firefox Android wieder zuverlässig. Seitenoperationen nutzen jetzt eine wiederverwendbare Laufzeit statt wiederholter Skriptinjektionen.
+> Eine Seiten- oder Frame-Navigation kann eine laufende CSS-Prüfung nicht mehr in ein neues Dokument umleiten. Das Popup fordert bei Bedarf sicher zu einem erneuten Versuch auf.
 
 ## Español
 
 Notas de la versión:
 
-> Se corrigieron Media Rules y Keyframes en Firefox Android. Las operaciones usan ahora un entorno reutilizable en la página en lugar de reinyectar scripts.
+> La navegación de una página o un marco ya no puede redirigir una operación CSS en curso a un documento nuevo. El popup solicita repetirla de forma segura cuando es necesario.
 
 ## 日本語
 
 リリースノート:
 
-> Firefox AndroidでMedia RulesとKeyframesが安定して動作するよう、同じスクリプトの再注入をやめて再利用可能なページランタイムに切り替えました。
+> ページやフレームの移動時に、実行中のCSS操作が新しいドキュメントへ誤って引き継がれないよう修正しました。必要な場合は安全に再試行を案内します。
 
 ## Português do Brasil
 
 Notas da versão:
 
-> Corrigimos Media Rules e Keyframes no Firefox Android. As operações agora usam um runtime reutilizável na página em vez de reinjetar scripts.
+> A navegação da página ou do frame não pode mais redirecionar uma operação CSS em andamento para um novo documento. O popup solicita uma nova tentativa com segurança quando necessário.
 
 ## Українська
 
 Примітки до випуску:
 
-> Виправлено Media Rules і Keyframes у Firefox Android. Операції тепер використовують повторно використовуване середовище виконання сторінки замість повторних ін’єкцій скриптів.
+> Навігація сторінки або фрейму більше не перенаправляє активну CSS-операцію в новий документ. За потреби попап безпечно запропонує повторити операцію.

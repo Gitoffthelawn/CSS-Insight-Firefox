@@ -4,6 +4,7 @@ import { readFile } from 'node:fs/promises';
 
 const manifest = JSON.parse(await readFile(new URL('../manifest.json', import.meta.url), 'utf8'));
 const pickerSource = await readFile(new URL('../scripts/getTagName.js', import.meta.url), 'utf8');
+const bridgeSource = await readFile(new URL('../scripts/inspectionBridge.js', import.meta.url), 'utf8');
 const commonSource = await readFile(new URL('../scripts/common.js', import.meta.url), 'utf8');
 const popupSource = await readFile(new URL('../popup.js', import.meta.url), 'utf8');
 const backgroundSource = await readFile(
@@ -72,6 +73,10 @@ test('page operations use the manifest content runtime before dynamic fallback',
   );
   assert.match(commonSource, /cssInsight:runPageOperation/);
   assert.match(commonSource, /sendTabMessage\([\s\S]*?RUN_PAGE_OPERATION/);
+  assert.match(commonSource, /instanceId:\s*runtimeInstanceId/);
+  assert.match(commonSource, /CSS_INSIGHT_RUNTIME_CHANGED/);
+  assert.match(bridgeSource, /request\.instanceId !== instanceId/);
+  assert.match(popupSource, /t\('runtimechanged'\)/);
   assert.match(commonSource, /files:\s*SUPPORT_SCRIPT_FILES/);
   assert.match(commonSource, /documentId[\s\S]*?catch\(\(\) => browser\.tabs\.sendMessage/);
   assert.match(commonSource, /frameIds: \[frameId\]/);

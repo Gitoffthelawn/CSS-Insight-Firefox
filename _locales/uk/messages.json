@@ -47,6 +47,7 @@
   "pageaccessmozilla": { "message": "Firefox не дозволяє розширенням перевіряти цю захищену сторінку Mozilla." },
   "pageaccessfile": { "message": "Firefox не вдалося отримати доступ до цього локального файла." },
   "operationfailed": { "message": "CSS Insight не вдалося завершити операцію." },
+  "runtimechanged": { "message": "Сторінка змінилася до завершення операції. Спробуйте ще раз." },
   "targetunavailable": { "message": "Вибраний фрейм або відкритий shadow root більше недоступний." },
   "currenttarget": { "message": "Поточна ціль" },
   "useactivepage": { "message": "Використати активну сторінку" },

@@ -174,7 +174,9 @@ test('declares and routes iframe picker contexts without new permissions', () =>
   assert.match(backgroundSource, /allFrames:\s*true/);
   assert.match(
     popupSource,
-    /ensureContentScripts\(tab\.id, targetFrameId, targetDocumentId\)/
+    /ensureContentScripts\(\s*tab\.id,\s*targetFrameId,\s*targetDocumentId\s*\)/
   );
-  assert.match(popupSource, /context\.frameId/);
+  assert.match(popupSource, /runtimeInstanceId:\s*controllers\.runtimeInstanceId/);
+  assert.match(popupSource, /prepareTopFrameRuntime/);
+  assert.match(popupSource, /ensureContentScripts\(context\.tab\.id, 0, null\)/);
 });

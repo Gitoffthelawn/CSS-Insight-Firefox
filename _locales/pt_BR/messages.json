@@ -47,6 +47,7 @@
   "pageaccessmozilla": { "message": "O Firefox não permite que extensões inspecionem esta página protegida da Mozilla." },
   "pageaccessfile": { "message": "O Firefox não conseguiu acessar este arquivo local." },
   "operationfailed": { "message": "O CSS Insight não conseguiu concluir a operação." },
+  "runtimechanged": { "message": "A página mudou antes da conclusão da operação. Tente novamente." },
   "targetunavailable": { "message": "O frame selecionado ou shadow root aberto não está mais disponível." },
   "currenttarget": { "message": "Alvo atual" },
   "useactivepage": { "message": "Usar página ativa" },

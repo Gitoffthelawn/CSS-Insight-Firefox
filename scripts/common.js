@@ -24,6 +24,14 @@ const SCRIPT_OPERATIONS = Object.freeze({
 const GET_PICKER_STATE = 'cssInsight:getPickerState';
 const GET_INSPECTION_STATE = 'cssInsight:getInspectionRuntimeState';
 const RUN_PAGE_OPERATION = 'cssInsight:runPageOperation';
+export const RUNTIME_CHANGED_ERROR_CODE = 'CSS_INSIGHT_RUNTIME_CHANGED';
+
+function createRuntimeChangedError() {
+  const error = new Error('The page changed before the operation completed.');
+  error.name = 'PageRuntimeChangedError';
+  error.code = RUNTIME_CHANGED_ERROR_CODE;
+  return error;
+}
 
 function getInjectionTarget(tabId, frameId, documentId) {
   return typeof documentId === 'string' && documentId
@@ -48,6 +56,19 @@ function isInspectionResponse(response) {
   return response?.source === 'css-insight-inspection' && response.ok === true;
 }
 
+function isInspectionStateResponse(response) {
+  return isInspectionResponse(response) &&
+    typeof response.state?.instanceId === 'string' &&
+    Boolean(response.state.instanceId);
+}
+
+function attachRuntimeInstance(state) {
+  return {
+    ...state,
+    runtimeInstanceId: state.inspection.state.instanceId
+  };
+}
+
 async function getControllerState(tabId, frameId, documentId) {
   const [picker, inspection] = await Promise.all([
     sendTabMessage(tabId, { action: GET_PICKER_STATE }, frameId, documentId),
@@ -61,8 +82,8 @@ export async function ensureContentScripts(tabId, frameId = 0, documentId = null
   try {
     const state = await getControllerState(tabId, frameId, documentId);
 
-    if (isPickerResponse(state.picker) && isInspectionResponse(state.inspection)) {
-      return state;
+    if (isPickerResponse(state.picker) && isInspectionStateResponse(state.inspection)) {
+      return attachRuntimeInstance(state);
     }
   } catch {
     // One or both content controllers are not available in this document yet.
@@ -75,11 +96,11 @@ export async function ensureContentScripts(tabId, frameId = 0, documentId = null
 
   const state = await getControllerState(tabId, frameId, documentId);
 
-  if (!isPickerResponse(state.picker) || !isInspectionResponse(state.inspection)) {
+  if (!isPickerResponse(state.picker) || !isInspectionStateResponse(state.inspection)) {
     throw new Error('The CSS Insight page controllers did not respond.');
   }
 
-  return state;
+  return attachRuntimeInstance(state);
 }
 
 export async function executeScript(
@@ -87,7 +108,8 @@ export async function executeScript(
   scriptFile,
   data = null,
   frameId = 0,
-  documentId = null
+  documentId = null,
+  runtimeInstanceId = null
 ) {
   const operation = SCRIPT_OPERATIONS[scriptFile];
 
@@ -95,12 +117,21 @@ export async function executeScript(
     throw new Error(`Unknown CSS Insight script: ${scriptFile}`);
   }
 
+  if (typeof runtimeInstanceId !== 'string' || !runtimeInstanceId) {
+    throw createRuntimeChangedError();
+  }
+
   const response = await sendTabMessage(
     tabId,
-    { action: RUN_PAGE_OPERATION, operation, data },
+    { action: RUN_PAGE_OPERATION, operation, data, instanceId: runtimeInstanceId },
     frameId,
     documentId
   );
+
+  if (response?.source === 'css-insight-inspection' &&
+      response.errorCode === 'runtime_changed') {
+    throw createRuntimeChangedError();
+  }
 
   if (!isInspectionResponse(response)) {
     throw new Error(response?.error || 'The CSS Insight page operation did not respond.');

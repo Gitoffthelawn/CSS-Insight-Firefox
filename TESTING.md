@@ -101,9 +101,10 @@ Run `npm run build`, then load `dist/firefox/manifest.json` through `about:debug
 - Confirm the manifest content script uses `all_frames`, `match_about_blank` and `match_origin_as_fallback` without adding permissions.
 - Confirm Firefox uses a non-persistent background event page, not a service worker.
 - Run `npm run check` and confirm all automated tests pass.
-- On Firefox Android, reload an already open test page once after installing the update, then run Media Rules and Keyframes repeatedly on at least two sites.
-- Update from `1.23.3` to `1.23.4` and confirm no release-notes tab opens. Simulate a minor-version update and confirm the localized release-notes page opens once.
+- On Firefox Android, reload a page while requesting Media Rules or Keyframes. Confirm the operation either finishes in the original document or shows the localized retry message, never a result from the replacement document.
+- Select an element inside an iframe and open View More Details. Confirm the modal still opens in the top frame.
+- Update from `1.23.4` to `1.23.5` and confirm no release-notes tab opens. Simulate a minor-version update and confirm the localized release-notes page opens once.
 - If `web-ext` is installed, run `web-ext lint --warnings-as-errors` before submitting to AMO.
-- Run `unzip -t dist/CSS-Insight-firefox-1.23.4-amo.zip`.
-- Run `unzip -t dist/CSS-Insight-firefox-1.23.4-source.zip` and confirm `manifest.json`, `package.json`, `scripts/` and `tests/` are at the ZIP root.
+- Run `unzip -t dist/CSS-Insight-firefox-1.23.5-amo.zip`.
+- Run `unzip -t dist/CSS-Insight-firefox-1.23.5-source.zip` and confirm `manifest.json`, `package.json`, `scripts/` and `tests/` are at the ZIP root.
 - Confirm the AMO archive contains no tests, build tools, `.gitignore`, `metadata.json`, or obsolete scripts.

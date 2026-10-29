@@ -1,5 +1,23 @@
 # Changelog
 
+## 1.23.5 - 2026-10-29
+
+### Fixed
+
+- A navigation between the runtime check and a page operation can no longer redirect that operation into the replacement document.
+- The `documentId` to `frameId` fallback now verifies a per-document runtime instance before running any collector.
+- View More Details obtains the top frame runtime instance separately when the selected target is inside an iframe.
+- Replaced-document failures now show a localized retry message in all six interface locales.
+
+### Changed
+
+- Runtime instance identifiers are temporary, document-scoped and never stored.
+- Permissions and host access declarations remain unchanged.
+
+### Development
+
+- Added a red-green navigation race model and regression coverage for stale runtime rejection before collector execution.
+
 ## 1.23.4 - 2026-10-29
 
 ### Fixed
