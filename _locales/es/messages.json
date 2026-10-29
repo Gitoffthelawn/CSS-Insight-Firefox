@@ -72,5 +72,13 @@
   "updatemoretools": { "message": "Más herramientas" },
   "updatefocusprompt": { "message": "Mantén la concentración con" },
   "updatetoolsprompt": { "message": "Descubre más herramientas centradas en la privacidad en" },
-  "updatelogoalt": { "message": "Logotipo de CSS Insight" }
+  "updatelogoalt": { "message": "Logotipo de CSS Insight" },
+  "filtercomputed": { "message": "Filtrar propiedades calculadas" },
+  "filterplaceholder": { "message": "p. ej., color o grid" },
+  "filtermatchcount": { "message": "$COUNT$ propiedades coincidentes", "placeholders": { "count": { "content": "$1" } } },
+  "nofiltermatches": { "message": "No hay propiedades coincidentes." },
+  "mediamatches": { "message": "Las condiciones de medios coinciden con el entorno actual." },
+  "mediadoesnotmatch": { "message": "Las condiciones de medios no coinciden con el entorno actual." },
+  "updatefeaturefilter": { "message": "Filtra los estilos calculados por nombre de propiedad o valor resuelto." },
+  "updatefeaturemedia": { "message": "Comprueba si las Media Rules coinciden con el entorno actual." }
 }

@@ -28,13 +28,28 @@ function getComputedStyles(request) {
   }
 
   const computedStyle = window.getComputedStyle(element);
-  let result = `/* ${FOUND} "${safeSelector}": */\n\n`;
+  const header = `/* ${FOUND} "${safeSelector}": */`;
+  const properties = [];
 
   for (let property of computedStyle) {
-    result += `${property}: ${computedStyle.getPropertyValue(property)};\n`;
+    properties.push({
+      name: property,
+      value: computedStyle.getPropertyValue(property)
+    });
   }
 
-  return result.trim();
+  if (request?.structured === true) {
+    return {
+      type: 'css-insight-computed-styles',
+      header,
+      properties
+    };
+  }
+
+  const declarations = properties
+    .map(property => `${property.name}: ${property.value};`)
+    .join('\n');
+  return `${header}\n\n${declarations}`.trim();
 }
 
 getComputedStyles(globalThis.__CSS_INSIGHT_DATA__);

@@ -222,3 +222,24 @@ button:disabled:hover {
 #saveBtn {
   max-width: 55%;
 }
+
+.styleFilter {
+  margin: .55rem 0 .4rem;
+}
+
+.styleFilter label {
+  display: block;
+  font-size: .7rem;
+}
+
+#styleFilterInput {
+  margin-bottom: .2rem;
+  font-size: .8rem;
+}
+
+.filterStatus {
+  display: block;
+  min-height: 1em;
+  color: #334e68;
+  font-size: .65rem;
+}

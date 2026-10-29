@@ -2,7 +2,11 @@ import {
   ensureContentScripts,
   executeScript
 } from './scripts/common.js';
-import { displayStyles } from './scripts/displayStyles.js';
+import {
+  displayStyles,
+  filterComputedStyles,
+  isComputedStylesResult
+} from './scripts/displayStyles.js';
 import {
   getActiveTab,
   getCurrentWindowId,
@@ -34,6 +38,9 @@ const trackTagBtn = document.getElementById('trackTagBtn');
 const tagInput = document.getElementById('tagInput');
 const targetContextValue = document.getElementById('targetContextValue');
 const styleDataElement = document.getElementById('styleData');
+const styleFilterControls = document.getElementById('styleFilterControls');
+const styleFilterInput = document.getElementById('styleFilterInput');
+const styleFilterStatus = document.getElementById('styleFilterStatus');
 const pageActionElements = Array.from(document.querySelectorAll('[data-page-action]'));
 
 let isBusy = false;
@@ -46,6 +53,7 @@ let targetRefreshId = 0;
 let refreshTimer = 0;
 let pickerExpiryTimer = 0;
 let pickerSession = null;
+let computedStylesResult = null;
 let resultTargetPromise = Promise.resolve();
 let pickerResult = {
   selector: '',
@@ -488,6 +496,36 @@ function getSelector() {
   return tagInput.value.trim() || 'body';
 }
 
+function applyComputedStylesFilter() {
+  if (!computedStylesResult) return;
+
+  const query = styleFilterInput.value.trim();
+  const filtered = filterComputedStyles(
+    computedStylesResult,
+    query,
+    t('nofiltermatches')
+  );
+  displayStyles(filtered.text);
+  styleFilterStatus.textContent = query
+    ? filtered.matchCount
+      ? t('filtermatchcount', String(filtered.matchCount))
+      : t('nofiltermatches')
+    : '';
+}
+
+function displayStyleResult(result) {
+  computedStylesResult = isComputedStylesResult(result) ? result : null;
+  styleFilterInput.value = '';
+  styleFilterStatus.textContent = '';
+  styleFilterControls.classList.toggle('hidden', !computedStylesResult);
+
+  if (computedStylesResult) {
+    applyComputedStylesFilter();
+  } else {
+    displayStyles(result);
+  }
+}
+
 async function retrieveStyles(scriptFile, data = null) {
   await runPageOperation(async context => {
     const request = data && typeof data === 'object'
@@ -500,7 +538,7 @@ async function retrieveStyles(scriptFile, data = null) {
       context.frameId,
       context.documentId
     );
-    displayStyles(result);
+    displayStyleResult(result);
   });
 }
 
@@ -509,7 +547,19 @@ document.getElementById('declaredStylesBtn').addEventListener('click', () => {
 });
 
 document.getElementById('computedStylesBtn').addEventListener('click', () => {
-  retrieveStyles('scripts/getComputedStyles.js', getSelector());
+  retrieveStyles('scripts/getComputedStyles.js', {
+    selector: getSelector(),
+    structured: true
+  });
+});
+
+styleFilterInput.addEventListener('input', applyComputedStylesFilter);
+styleFilterInput.addEventListener('keydown', event => {
+  if (event.key === 'Escape' && styleFilterInput.value) {
+    event.preventDefault();
+    styleFilterInput.value = '';
+    applyComputedStylesFilter();
+  }
 });
 
 document.getElementById('mediaRulesBtn').addEventListener('click', () => {

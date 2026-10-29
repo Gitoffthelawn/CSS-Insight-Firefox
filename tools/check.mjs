@@ -164,6 +164,8 @@ for (const key of usedMessageKeys) {
 }
 
 const englishMessageKeys = Object.keys(messages).sort();
+check(englishMessageKeys.length === 82,
+  `Expected 82 English localization keys, found ${englishMessageKeys.length}.`);
 
 for (const locale of supportedLocales) {
   const localizedMessages = localeMessages[locale];
@@ -180,6 +182,8 @@ for (const locale of supportedLocales) {
 
   check([...localizedMessages.description.message].length <= 132,
     `${locale} manifest description exceeds 132 characters.`);
+  check(localizedMessages.filtermatchcount?.placeholders?.count?.content === '$1',
+    `${locale} computed-style match count must preserve its substitution placeholder.`);
 }
 
 const firstPartyTextFiles = allFiles.filter(file => {
@@ -215,6 +219,9 @@ const popupHtml = await readFile(path.join(root, 'popup.html'), 'utf8');
 const updateHtml = await readFile(path.join(root, 'update/update.html'), 'utf8');
 const updateSource = await readFile(path.join(root, 'update/update.js'), 'utf8');
 const modalSource = await readFile(path.join(root, 'scripts/showModalWithCSSData.js'), 'utf8');
+const displayStylesSource = await readFile(path.join(root, 'scripts/displayStyles.js'), 'utf8');
+const computedStylesSource = await readFile(path.join(root, 'scripts/getComputedStyles.js'), 'utf8');
+const mediaRulesSource = await readFile(path.join(root, 'scripts/getMediaRules.js'), 'utf8');
 check(!/window\.close\s*\(/.test(popupSource),
   'The popup must not close its own tab after starting the picker.');
 check(!/activateTab\s*\(/.test(popupSource),
@@ -225,6 +232,13 @@ check(/id="targetContextValue"/.test(popupHtml) && /id="useActivePageBtn"/.test(
   'The popup must expose and reset its inspection target.');
 check(/id="removeRuleBtn"/.test(popupHtml) && /remove:\s*true/.test(popupSource),
   'The popup must offer explicit CSS preview removal.');
+check(/id="styleFilterInput"/.test(popupHtml) && /filterComputedStyles/.test(popupSource),
+  'The popup must expose computed-style filtering.');
+check(/css-insight-computed-styles/.test(computedStylesSource) &&
+  /isComputedStylesResult/.test(displayStylesSource),
+  'Computed styles must use the structured filter transport.');
+check(/window\.matchMedia/.test(mediaRulesSource) && /mediadoesnotmatch/.test(mediaRulesSource),
+  'Media-rule output must report the current condition status.');
 const backgroundSource = await readFile(path.join(root, 'scripts/service_worker.js'), 'utf8');
 check(/cssInsightPickerSessions/.test(backgroundSource),
   'The background must persist window-scoped picker sessions.');

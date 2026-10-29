@@ -38,6 +38,11 @@
         <button type="button" id="hideCssInfo" class="hideBtn" data-i18n-aria-label="close">×</button>
         <button type="button" id="saveBtn" data-i18n="savetofile"></button>
       </div>
+      <div id="styleFilterControls" class="styleFilter hidden">
+        <label for="styleFilterInput" data-i18n="filtercomputed"></label>
+        <input type="search" id="styleFilterInput" data-i18n-placeholder="filterplaceholder" autocomplete="off">
+        <span id="styleFilterStatus" class="filterStatus" role="status" aria-live="polite"></span>
+      </div>
       <div>
         <pre class="output">
           <code

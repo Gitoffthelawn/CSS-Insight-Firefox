@@ -72,5 +72,13 @@
   "updatemoretools": { "message": "Інші інструменти" },
   "updatefocusprompt": { "message": "Зберігайте зосередженість із" },
   "updatetoolsprompt": { "message": "Інші інструменти з акцентом на приватність знайдете на" },
-  "updatelogoalt": { "message": "Логотип CSS Insight" }
+  "updatelogoalt": { "message": "Логотип CSS Insight" },
+  "filtercomputed": { "message": "Фільтр обчислених властивостей" },
+  "filterplaceholder": { "message": "наприклад, color або grid" },
+  "filtermatchcount": { "message": "Збігів властивостей: $COUNT$", "placeholders": { "count": { "content": "$1" } } },
+  "nofiltermatches": { "message": "Властивостей із таким збігом немає." },
+  "mediamatches": { "message": "Медіаумови відповідають поточному середовищу." },
+  "mediadoesnotmatch": { "message": "Медіаумови не відповідають поточному середовищу." },
+  "updatefeaturefilter": { "message": "Фільтруйте обчислені стилі за назвою властивості або отриманим значенням." },
+  "updatefeaturemedia": { "message": "Перевіряйте відповідність Media Rules поточному середовищу." }
 }

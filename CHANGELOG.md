@@ -1,5 +1,22 @@
 # Changelog
 
+## 1.23.3 - 2026-10-29
+
+### Added
+
+- Computed Styles results can be filtered by property name or resolved value without running another page query.
+- Media Rules results now state whether their media conditions match the current frame environment.
+
+### Changed
+
+- Copy, Save and View More Details use the currently visible computed-style selection while a filter is active.
+- Nested media-rule status includes every enclosing media condition.
+
+### Development
+
+- Added structured computed-style transport and focused regression coverage for filtering, empty results and media-condition status.
+- Expanded all six locale catalogs from 74 to 82 validated messages.
+
 ## 1.23.2 - 2026-10-29
 
 ### Added

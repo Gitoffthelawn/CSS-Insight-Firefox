@@ -37,6 +37,8 @@ const messages = {
   invalidselector: 'Invalid CSS selector',
   norules: 'No rules for selector',
   notfound: 'No elements found for selector',
+  mediamatches: 'Media conditions match the current environment.',
+  mediadoesnotmatch: 'Media conditions do not match the current environment.',
   sourceconstructed: 'constructed stylesheet',
   sourceinline: 'inline <style>',
   sourcepreview: 'CSS Insight preview',
@@ -63,6 +65,9 @@ function makeContext(document) {
     CSSRule: { KEYFRAMES_RULE: 7, MEDIA_RULE: 4 },
     CSSSupportsRule: class CSSSupportsRule {},
     document,
+    window: {
+      matchMedia: query => ({ matches: true, media: query })
+    },
     __CSS_INSIGHT_DATA__: '.card'
   });
 }
@@ -268,7 +273,10 @@ test('declared and computed styles resolve the selected open shadow root', () =>
   const computedStyle = ['color'];
   computedStyle.getPropertyValue = property =>
     property === 'color' ? 'rgb(102, 51, 153)' : '';
-  context.window = { getComputedStyle: () => computedStyle };
+  context.window = {
+    getComputedStyle: () => computedStyle,
+    matchMedia: query => ({ matches: true, media: query })
+  };
   context.__CSS_INSIGHT_DATA__ = {
     selector: '.control',
     shadowPath: ['app-shell']
@@ -285,6 +293,7 @@ test('declared and computed styles resolve the selected open shadow root', () =>
   assert.match(declaredResult, /inline <style> \(id="component"\)/);
   assert.match(computedResult, /color: rgb\(102, 51, 153\);/);
   assert.match(mediaResult, /@media \(width > 10rem\)/);
+  assert.match(mediaResult, /Media conditions match the current environment/);
   assert.match(keyframesResult, /@keyframes pulse/);
 });
 
@@ -292,6 +301,7 @@ test('media and keyframe collectors retain nested grouping context', () => {
   const mediaRule = {
     cssRules: [],
     cssText: '@media (width > 20rem) { .card { display: grid; } }',
+    media: { mediaText: '(width > 20rem)' },
     type: 4
   };
   const keyframesRule = {
@@ -307,11 +317,40 @@ test('media and keyframe collectors retain nested grouping context', () => {
     styleSheets: [],
     adoptedStyleSheets: [{ cssRules: [layerRule] }]
   });
+  context.window.matchMedia = query => ({
+    matches: query !== '(width > 20rem)',
+    media: query
+  });
 
   loadUtilities(context);
   const mediaResult = vm.runInContext(mediaRulesSource, context);
   const keyframesResult = vm.runInContext(keyframesRulesSource, context);
 
   assert.match(mediaResult, /@layer components[\s\S]*@media \(width > 20rem\)/);
+  assert.match(mediaResult, /Media conditions do not match the current environment/);
   assert.match(keyframesResult, /@layer components[\s\S]*@keyframes fade/);
+});
+
+test('computed styles can return structured properties for popup filtering', () => {
+  const computedStyle = ['color', 'display'];
+  computedStyle.getPropertyValue = property => ({
+    color: 'rgb(1, 2, 3)',
+    display: 'grid'
+  })[property];
+  const context = makeContext({
+    querySelector: selector => selector === '.card' ? {} : null
+  });
+  context.window.getComputedStyle = () => computedStyle;
+  context.__CSS_INSIGHT_DATA__ = { selector: '.card', structured: true };
+
+  vm.runInContext(`(() => { ${inspectionTargetSource} })()`, context);
+  const result = JSON.parse(JSON.stringify(
+    vm.runInContext(computedStylesSource, context)
+  ));
+
+  assert.equal(result.type, 'css-insight-computed-styles');
+  assert.deepEqual(result.properties, [
+    { name: 'color', value: 'rgb(1, 2, 3)' },
+    { name: 'display', value: 'grid' }
+  ]);
 });

@@ -10,7 +10,7 @@ Run `npm run build`, then load `dist/firefox/manifest.json` through `about:debug
 
 ## Localization
 
-- Run `npm run check` and confirm all 74 message keys are present in `de`, `en`, `es`, `ja`, `pt_BR` and `uk`.
+- Run `npm run check` and confirm all 82 message keys are present in `de`, `en`, `es`, `ja`, `pt_BR` and `uk`.
 - Switch the browser UI through German, Spanish, Japanese, Brazilian Portuguese and Ukrainian, restarting the browser when prompted. Confirm the extension name, description, popup controls, picker tooltips, status messages and on-page details dialog use the selected locale.
 - In every locale, trigger an invalid selector, a protected-page message, a picker timeout and an unavailable iframe or shadow-root target. Confirm no empty labels or raw localization keys appear.
 - Confirm long German and Portuguese labels wrap vertically without changing the desktop popup width.
@@ -52,8 +52,12 @@ Run `npm run build`, then load `dist/firefox/manifest.json` through `about:debug
 - Retrieve a rule declared inside a page `<style>` element. Confirm its source is labeled as inline instead of `null`.
 - Apply a CSS Insight preview, retrieve the same rule and confirm its source is labeled **CSS Insight preview**.
 - Retrieve computed styles for a valid selector.
+- Filter Computed Styles by a property name such as `grid`, then by a resolved value such as `rgb`. Confirm Copy, Save and View More Details use only the visible filtered result.
+- Enter a filter with no matches and confirm a localized empty result appears. Press Escape and confirm the complete computed result returns without another page query.
 - Enter an invalid selector in both Declared Styles and Computed Styles. Confirm the localized validation result is shown without breaking the popup.
 - Retrieve media rules and keyframes on a page that contains them.
+- Resize the test viewport across a media-query boundary and retrieve Media Rules again. Confirm each result reports whether its media conditions match the current frame environment.
+- Test nested `@media` rules and confirm an inner result is marked matching only when every enclosing media condition also matches.
 - Copy retrieved CSS and save it to `styles.css`.
 - Open **View More Details**, copy from the native page dialog, close it with Escape and close it by selecting the backdrop. Confirm Tab stays inside the dialog and focus returns to the previously focused page element.
 - Apply a CSS rule, then apply a different rule. Confirm the second preview replaces the first CSS Insight style element.
@@ -97,8 +101,8 @@ Run `npm run build`, then load `dist/firefox/manifest.json` through `about:debug
 - Confirm the manifest content script uses `all_frames`, `match_about_blank` and `match_origin_as_fallback` without adding permissions.
 - Confirm Firefox uses a non-persistent background event page, not a service worker.
 - Run `npm run check` and confirm all automated tests pass.
-- Update from `1.23.1` to `1.23.2` and confirm no release-notes tab opens. Simulate a minor-version update and confirm the localized release-notes page opens once.
+- Update from `1.23.2` to `1.23.3` and confirm no release-notes tab opens. Simulate a minor-version update and confirm the localized release-notes page opens once.
 - If `web-ext` is installed, run `web-ext lint --warnings-as-errors` before submitting to AMO.
-- Run `unzip -t dist/CSS-Insight-firefox-1.23.2-amo.zip`.
-- Run `unzip -t dist/CSS-Insight-firefox-1.23.2-source.zip` and confirm `manifest.json`, `package.json`, `scripts/` and `tests/` are at the ZIP root.
+- Run `unzip -t dist/CSS-Insight-firefox-1.23.3-amo.zip`.
+- Run `unzip -t dist/CSS-Insight-firefox-1.23.3-source.zip` and confirm `manifest.json`, `package.json`, `scripts/` and `tests/` are at the ZIP root.
 - Confirm the AMO archive contains no tests, build tools, `.gitignore`, `metadata.json`, or obsolete scripts.

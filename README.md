@@ -6,7 +6,7 @@
 ![Last commit](https://img.shields.io/github/last-commit/MarkAlexI/CSS-Insight-Firefox)
 ![Issues](https://img.shields.io/github/issues/MarkAlexI/CSS-Insight-Firefox)
 [![AMO](https://img.shields.io/amo/v/css-insight)](https://addons.mozilla.org/firefox/addon/css-insight/)
-![status](https://img.shields.io/badge/status-v1.23.2-blue)
+![status](https://img.shields.io/badge/status-v1.23.3-blue)
 
 CSS Insight is a lightweight Firefox extension for inspecting and testing CSS directly on a webpage. It is designed for quick checks when opening a full developer tools workflow is inconvenient.
 
@@ -15,7 +15,8 @@ CSS Insight is a lightweight Firefox extension for inspecting and testing CSS di
 - **Element picker**: Click or tap an element in a page, matching iframe or open shadow root to create a usable CSS selector.
 - **Declared styles**: Find matching rules across nested CSS at-rules, native nesting and constructed stylesheets in the selected root.
 - **Computed styles**: View the final computed property values of an element.
-- **Media rules and keyframes**: Explore responsive and animation rules recursively in the selected document or open shadow root.
+- **Computed-style filter**: Narrow large computed-style results by property name or resolved value.
+- **Media rules and keyframes**: Explore responsive and animation rules recursively and see whether media conditions currently match.
 - **CSS preview**: Apply a custom rule to the selected document or open shadow root without changing the website source.
 - **Visible target context**: See whether actions use the page, an iframe or an open shadow root, and reset to the active page at any time.
 - **Removable preview**: Undo the CSS Insight preview without reloading the page.

@@ -1,3 +1,3 @@
-export function t(key) {
-  return browser.i18n.getMessage(key) || key;
+export function t(key, substitutions) {
+  return browser.i18n.getMessage(key, substitutions) || key;
 }
