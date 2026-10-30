@@ -53,6 +53,8 @@ function getDeclaredStyles(request = 'body') {
   const root = targetUtilities.resolveInspectionRoot(target);
   const selector = target.selector;
   const safeSelector = utilities.sanitizeCssComment(selector);
+  const entries = [];
+  const notices = [];
   let elements;
 
   if (!root) {
@@ -83,15 +85,28 @@ function getDeclaredStyles(request = 'body') {
 
       if (!matches) return;
       matchedRules.add(rule);
-      result += `/* ${FOUND} "${safeSelector}" (${getStyleSource(sheet, root)}): */\n`;
-      result += `${utilities.formatRuleWithAncestors(rule, ancestors)}\n\n`;
+      const entry = `/* ${FOUND} "${safeSelector}" (${getStyleSource(sheet, root)}): */\n` +
+        utilities.formatRuleWithAncestors(rule, ancestors);
+      entries.push({ text: entry, searchText: entry });
+      result += `${entry}\n\n`;
     },
     (error, sheet) => {
       console.warn(error?.message || error);
       const message = utilities.sanitizeCssComment(WAS_ERROR);
-      result += `/* ${message} (${getStyleSource(sheet, root)}) */\n\n`;
+      const notice = `/* ${message} (${getStyleSource(sheet, root)}) */`;
+      notices.push(notice);
+      result += `${notice}\n\n`;
     }
   );
+
+  if (request?.structured === true && entries.length) {
+    return {
+      type: 'css-insight-filterable-styles',
+      kind: 'declared',
+      entries,
+      notices
+    };
+  }
 
   return result.trim() || `/* ${NO_RULES} "${safeSelector}" */`;
 }

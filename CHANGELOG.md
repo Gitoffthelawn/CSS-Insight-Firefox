@@ -1,5 +1,22 @@
 # Changelog
 
+## 1.24.0 - 2026-10-29
+
+### Added
+
+- Declared Styles, Computed Styles, Media Rules and Keyframes can now be filtered locally without another page query.
+
+### Changed
+
+- Rule filtering preserves each complete CSS block and its enclosing at-rule context.
+- Copy, Save and View More Details use the currently visible filtered output for every result type.
+- Stylesheet access notices remain visible while matching results are filtered.
+- Permissions and host access declarations remain unchanged.
+
+### Development
+
+- Generalized structured result transport across all four CSS collectors and added regression coverage for complete rule context, notices and local filtering.
+
 ## 1.23.5 - 2026-10-29
 
 ### Fixed

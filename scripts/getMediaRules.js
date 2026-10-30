@@ -8,6 +8,8 @@ function getMediaRules(request = {}) {
   const utilities = globalThis.__CSS_INSIGHT_STYLE_UTILS__;
   const targetUtilities = globalThis.__CSS_INSIGHT_TARGET_UTILS__;
   const root = targetUtilities.resolveInspectionRoot(request);
+  const entries = [];
+  const notices = [];
   let mediaRules = '';
 
   if (!root) return `/* ${TARGET_UNAVAILABLE} */`;
@@ -37,14 +39,27 @@ function getMediaRules(request = {}) {
           : `/* ${utilities.sanitizeCssComment(
             matches ? MEDIA_MATCHES : MEDIA_DOES_NOT_MATCH
           )} */\n`;
-        mediaRules += `${status}${utilities.formatRuleWithAncestors(rule, ancestors)}\n\n`;
+        const entry = `${status}${utilities.formatRuleWithAncestors(rule, ancestors)}`;
+        entries.push({ text: entry, searchText: entry });
+        mediaRules += `${entry}\n\n`;
       }
     },
     error => {
       console.warn(error?.message || error);
-      mediaRules += `/* ${utilities.sanitizeCssComment(WAS_ERROR)} */\n\n`;
+      const notice = `/* ${utilities.sanitizeCssComment(WAS_ERROR)} */`;
+      notices.push(notice);
+      mediaRules += `${notice}\n\n`;
     }
   );
+
+  if (request?.structured === true && entries.length) {
+    return {
+      type: 'css-insight-filterable-styles',
+      kind: 'media',
+      entries,
+      notices
+    };
+  }
 
   return mediaRules ? mediaRules.trim() : `/* ${NO_MEDIA} */`;
 }

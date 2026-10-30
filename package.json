@@ -1,6 +1,6 @@
 {
   "name": "css-insight-firefox",
-  "version": "1.23.5",
+  "version": "1.24.0",
   "private": true,
   "type": "module",
   "description": "Firefox source and reproducible AMO packaging for CSS Insight.",

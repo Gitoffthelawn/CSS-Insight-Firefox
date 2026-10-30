@@ -74,12 +74,12 @@
   "updatefocusprompt": { "message": "集中を保つためのツール" },
   "updatetoolsprompt": { "message": "プライバシー重視のツールをさらに見る" },
   "updatelogoalt": { "message": "CSS Insightのロゴ" },
-  "filtercomputed": { "message": "計算済みプロパティを絞り込む" },
-  "filterplaceholder": { "message": "例: color または grid" },
-  "filtermatchcount": { "message": "一致するプロパティ: $COUNT$ 件", "placeholders": { "count": { "content": "$1" } } },
-  "nofiltermatches": { "message": "一致するプロパティはありません。" },
+  "filtercomputed": { "message": "結果を絞り込む" },
+  "filterplaceholder": { "message": "例: color、@media、fade" },
+  "filtermatchcount": { "message": "$COUNT$ 件一致", "placeholders": { "count": { "content": "$1" } } },
+  "nofiltermatches": { "message": "一致する結果はありません。" },
   "mediamatches": { "message": "メディア条件は現在の環境に一致しています。" },
   "mediadoesnotmatch": { "message": "メディア条件は現在の環境に一致していません。" },
-  "updatefeaturefilter": { "message": "計算済みスタイルをプロパティ名または解決済みの値で絞り込めます。" },
+  "updatefeaturefilter": { "message": "ページを再取得せずに、宣言済みスタイル、計算済みスタイル、メディアルール、キーフレームを絞り込めます。" },
   "updatefeaturemedia": { "message": "Media Rulesが現在の環境に一致するか確認できます。" }
 }

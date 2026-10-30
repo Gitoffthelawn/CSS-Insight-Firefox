@@ -74,12 +74,12 @@
   "updatefocusprompt": { "message": "Mantenha o foco com" },
   "updatetoolsprompt": { "message": "Descubra mais ferramentas focadas em privacidade em" },
   "updatelogoalt": { "message": "Logotipo do CSS Insight" },
-  "filtercomputed": { "message": "Filtrar propriedades computadas" },
-  "filterplaceholder": { "message": "ex.: color ou grid" },
-  "filtermatchcount": { "message": "$COUNT$ propriedades correspondentes", "placeholders": { "count": { "content": "$1" } } },
-  "nofiltermatches": { "message": "Nenhuma propriedade correspondente." },
+  "filtercomputed": { "message": "Filtrar resultados" },
+  "filterplaceholder": { "message": "ex.: color, @media ou fade" },
+  "filtermatchcount": { "message": "$COUNT$ correspondências", "placeholders": { "count": { "content": "$1" } } },
+  "nofiltermatches": { "message": "Nenhum resultado correspondente." },
   "mediamatches": { "message": "As condições de mídia correspondem ao ambiente atual." },
   "mediadoesnotmatch": { "message": "As condições de mídia não correspondem ao ambiente atual." },
-  "updatefeaturefilter": { "message": "Filtre os estilos computados pelo nome da propriedade ou valor resolvido." },
+  "updatefeaturefilter": { "message": "Filtre estilos declarados, estilos computados, regras de mídia e keyframes sem consultar a página novamente." },
   "updatefeaturemedia": { "message": "Veja se as Media Rules correspondem ao ambiente atual." }
 }

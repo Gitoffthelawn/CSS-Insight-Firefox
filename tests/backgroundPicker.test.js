@@ -77,7 +77,7 @@ function installBrowserMock({ silentMessage = () => false } = {}) {
       }
     },
     runtime: {
-      getManifest: () => ({ version: '1.23.5' }),
+      getManifest: () => ({ version: '1.24.0' }),
       getURL: path => `moz-extension://test/${path}`,
       onMessage: events.message,
       onStartup: events.startup,
@@ -214,12 +214,12 @@ test('opens release notes for feature updates but keeps patch updates silent', a
   moduleUrl.searchParams.set('update-page-test', `${Date.now()}-${Math.random()}`);
   await import(moduleUrl);
 
-  mock.events.installed.listener({ reason: 'update', previousVersion: '1.23.4' });
+  mock.events.installed.listener({ reason: 'update', previousVersion: '1.24.0' });
   assert.equal(mock.createdTabs.length, 0);
 
-  mock.events.installed.listener({ reason: 'update', previousVersion: '1.22.9' });
+  mock.events.installed.listener({ reason: 'update', previousVersion: '1.23.5' });
   assert.deepEqual(mock.createdTabs, [{
-    url: 'moz-extension://test/update/update.html?version=1.23.5'
+    url: 'moz-extension://test/update/update.html?version=1.24.0'
   }]);
 });
 

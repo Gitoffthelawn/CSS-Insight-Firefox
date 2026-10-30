@@ -74,12 +74,12 @@
   "updatefocusprompt": { "message": "Konzentriert bleiben mit" },
   "updatetoolsprompt": { "message": "Weitere datenschutzfreundliche Werkzeuge finden Sie bei" },
   "updatelogoalt": { "message": "CSS Insight-Logo" },
-  "filtercomputed": { "message": "Berechnete Eigenschaften filtern" },
-  "filterplaceholder": { "message": "z. B. color oder grid" },
-  "filtermatchcount": { "message": "$COUNT$ passende Eigenschaften", "placeholders": { "count": { "content": "$1" } } },
-  "nofiltermatches": { "message": "Keine passenden Eigenschaften." },
+  "filtercomputed": { "message": "Ergebnisse filtern" },
+  "filterplaceholder": { "message": "z. B. color, @media oder fade" },
+  "filtermatchcount": { "message": "$COUNT$ Treffer", "placeholders": { "count": { "content": "$1" } } },
+  "nofiltermatches": { "message": "Keine passenden Ergebnisse." },
   "mediamatches": { "message": "Die Medienbedingungen stimmen mit der aktuellen Umgebung überein." },
   "mediadoesnotmatch": { "message": "Die Medienbedingungen stimmen nicht mit der aktuellen Umgebung überein." },
-  "updatefeaturefilter": { "message": "Berechnete Stile nach Eigenschaftsname oder aufgelöstem Wert filtern." },
+  "updatefeaturefilter": { "message": "Deklarierte und berechnete Stile, Media-Regeln und Keyframes ohne erneute Seitenabfrage filtern." },
   "updatefeaturemedia": { "message": "Erkennen, ob Medienregeln zur aktuellen Umgebung passen." }
 }

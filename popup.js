@@ -5,8 +5,8 @@ import {
 } from './scripts/common.js';
 import {
   displayStyles,
-  filterComputedStyles,
-  isComputedStylesResult
+  filterStylesResult,
+  isFilterableStylesResult
 } from './scripts/displayStyles.js';
 import {
   getActiveTab,
@@ -54,7 +54,7 @@ let targetRefreshId = 0;
 let refreshTimer = 0;
 let pickerExpiryTimer = 0;
 let pickerSession = null;
-let computedStylesResult = null;
+let filterableStylesResult = null;
 let resultTargetPromise = Promise.resolve();
 let pickerResult = {
   selector: '',
@@ -521,12 +521,12 @@ function getSelector() {
   return tagInput.value.trim() || 'body';
 }
 
-function applyComputedStylesFilter() {
-  if (!computedStylesResult) return;
+function applyStylesFilter() {
+  if (!filterableStylesResult) return;
 
   const query = styleFilterInput.value.trim();
-  const filtered = filterComputedStyles(
-    computedStylesResult,
+  const filtered = filterStylesResult(
+    filterableStylesResult,
     query,
     t('nofiltermatches')
   );
@@ -539,13 +539,13 @@ function applyComputedStylesFilter() {
 }
 
 function displayStyleResult(result) {
-  computedStylesResult = isComputedStylesResult(result) ? result : null;
+  filterableStylesResult = isFilterableStylesResult(result) ? result : null;
   styleFilterInput.value = '';
   styleFilterStatus.textContent = '';
-  styleFilterControls.classList.toggle('hidden', !computedStylesResult);
+  styleFilterControls.classList.toggle('hidden', !filterableStylesResult);
 
-  if (computedStylesResult) {
-    applyComputedStylesFilter();
+  if (filterableStylesResult) {
+    applyStylesFilter();
   } else {
     displayStyles(result);
   }
@@ -569,7 +569,10 @@ async function retrieveStyles(scriptFile, data = null) {
 }
 
 document.getElementById('declaredStylesBtn').addEventListener('click', () => {
-  retrieveStyles('scripts/getDeclaredStyles.js', getSelector());
+  retrieveStyles('scripts/getDeclaredStyles.js', {
+    selector: getSelector(),
+    structured: true
+  });
 });
 
 document.getElementById('computedStylesBtn').addEventListener('click', () => {
@@ -579,21 +582,21 @@ document.getElementById('computedStylesBtn').addEventListener('click', () => {
   });
 });
 
-styleFilterInput.addEventListener('input', applyComputedStylesFilter);
+styleFilterInput.addEventListener('input', applyStylesFilter);
 styleFilterInput.addEventListener('keydown', event => {
   if (event.key === 'Escape' && styleFilterInput.value) {
     event.preventDefault();
     styleFilterInput.value = '';
-    applyComputedStylesFilter();
+    applyStylesFilter();
   }
 });
 
 document.getElementById('mediaRulesBtn').addEventListener('click', () => {
-  retrieveStyles('scripts/getMediaRules.js', {});
+  retrieveStyles('scripts/getMediaRules.js', { structured: true });
 });
 
 document.getElementById('keyframesRulesBtn').addEventListener('click', () => {
-  retrieveStyles('scripts/getKeyframesRules.js', {});
+  retrieveStyles('scripts/getKeyframesRules.js', { structured: true });
 });
 
 document.getElementById('copyBtn').addEventListener('click', async () => {

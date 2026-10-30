@@ -74,12 +74,12 @@
   "updatefocusprompt": { "message": "Stay focused with" },
   "updatetoolsprompt": { "message": "Discover more privacy-focused tools at" },
   "updatelogoalt": { "message": "CSS Insight logo" },
-  "filtercomputed": { "message": "Filter computed properties" },
-  "filterplaceholder": { "message": "e.g., color or grid" },
-  "filtermatchcount": { "message": "$COUNT$ matching properties", "placeholders": { "count": { "content": "$1" } } },
-  "nofiltermatches": { "message": "No matching properties." },
+  "filtercomputed": { "message": "Filter results" },
+  "filterplaceholder": { "message": "e.g., color, @media or fade" },
+  "filtermatchcount": { "message": "$COUNT$ matches", "placeholders": { "count": { "content": "$1" } } },
+  "nofiltermatches": { "message": "No matching results." },
   "mediamatches": { "message": "Media conditions match the current environment." },
   "mediadoesnotmatch": { "message": "Media conditions do not match the current environment." },
-  "updatefeaturefilter": { "message": "Filter Computed Styles by property name or resolved value." },
+  "updatefeaturefilter": { "message": "Filter Declared Styles, Computed Styles, Media Rules and Keyframes without another page query." },
   "updatefeaturemedia": { "message": "See whether Media Rules match the current environment." }
 }

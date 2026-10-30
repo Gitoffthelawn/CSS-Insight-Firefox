@@ -336,7 +336,7 @@ test('media and keyframe collectors retain nested grouping context', () => {
   assert.match(keyframesResult, /@layer components[\s\S]*@keyframes fade/);
 });
 
-test('computed styles can return structured properties for popup filtering', () => {
+test('computed styles return filterable entries for popup filtering', () => {
   const computedStyle = ['color', 'display'];
   computedStyle.getPropertyValue = property => ({
     color: 'rgb(1, 2, 3)',
@@ -353,11 +353,90 @@ test('computed styles can return structured properties for popup filtering', () 
     runOperation(context, computedStylesSource, 'getComputedStyles')
   ));
 
-  assert.equal(result.type, 'css-insight-computed-styles');
-  assert.deepEqual(result.properties, [
-    { name: 'color', value: 'rgb(1, 2, 3)' },
-    { name: 'display', value: 'grid' }
+  assert.equal(result.type, 'css-insight-filterable-styles');
+  assert.equal(result.kind, 'computed');
+  assert.deepEqual(result.entries, [
+    {
+      text: 'color: rgb(1, 2, 3);',
+      searchText: 'color\nrgb(1, 2, 3)'
+    },
+    {
+      text: 'display: grid;',
+      searchText: 'display\ngrid'
+    }
   ]);
+});
+
+test('declared, media and keyframe collectors return complete filterable blocks', () => {
+  const element = {
+    matches(selector) {
+      return selector === '.card';
+    }
+  };
+  const leaf = {
+    cssText: '.card { color: red; display: grid; }',
+    selectorText: '.card'
+  };
+  const media = {
+    cssRules: [leaf],
+    cssText: '@media (width > 30rem) { .card { color: red; display: grid; } }',
+    media: { mediaText: '(width > 30rem)' },
+    type: 4
+  };
+  const keyframes = {
+    cssRules: [],
+    cssText: '@keyframes fade { from { opacity: 0; } to { opacity: 1; } }',
+    type: 7
+  };
+  const sheet = {
+    cssRules: [media, keyframes],
+    href: 'https://example.com/components.css',
+    ownerNode: { localName: 'link' }
+  };
+  leaf.parentStyleSheet = sheet;
+  const context = makeContext({
+    adoptedStyleSheets: [],
+    styleSheets: [sheet],
+    querySelectorAll(selector) {
+      return selector === '.card' ? [element] : [];
+    }
+  });
+  context.window.matchMedia = query => ({ matches: true, media: query });
+
+  loadUtilities(context);
+  const declaredResult = JSON.parse(JSON.stringify(runOperation(
+    context,
+    declaredStylesSource,
+    'getDeclaredStyles',
+    { selector: '.card', structured: true }
+  )));
+  const mediaResult = JSON.parse(JSON.stringify(runOperation(
+    context,
+    mediaRulesSource,
+    'getMediaRules',
+    { structured: true }
+  )));
+  const keyframesResult = JSON.parse(JSON.stringify(runOperation(
+    context,
+    keyframesRulesSource,
+    'getKeyframes',
+    { structured: true }
+  )));
+
+  assert.equal(declaredResult.kind, 'declared');
+  assert.equal(declaredResult.entries.length, 1);
+  assert.match(declaredResult.entries[0].text, /components\.css/);
+  assert.match(declaredResult.entries[0].text, /@media \(width > 30rem\)/);
+  assert.match(declaredResult.entries[0].text, /\.card \{\s*color: red/);
+
+  assert.equal(mediaResult.kind, 'media');
+  assert.equal(mediaResult.entries.length, 1);
+  assert.match(mediaResult.entries[0].text, /Media conditions match/);
+  assert.match(mediaResult.entries[0].text, /@media \(width > 30rem\)/);
+
+  assert.equal(keyframesResult.kind, 'keyframes');
+  assert.equal(keyframesResult.entries.length, 1);
+  assert.match(keyframesResult.entries[0].text, /@keyframes fade/);
 });
 
 test('helper and collector scripts can be evaluated repeatedly in one content scope', () => {

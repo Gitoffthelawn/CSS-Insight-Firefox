@@ -1,7 +1,7 @@
 (() => {
   const CONTROLLER_KEY = '__CSS_INSIGHT_INSPECTION_BRIDGE__';
   const SOURCE = 'css-insight-inspection';
-  const VERSION = '1.23.5';
+  const VERSION = '1.24.0';
   const ACTIONS = {
     getState: 'cssInsight:getInspectionRuntimeState',
     run: 'cssInsight:runPageOperation'

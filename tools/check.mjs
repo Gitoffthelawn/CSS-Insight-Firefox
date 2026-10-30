@@ -199,7 +199,7 @@ for (const locale of supportedLocales) {
   check([...localizedMessages.description.message].length <= 132,
     `${locale} manifest description exceeds 132 characters.`);
   check(localizedMessages.filtermatchcount?.placeholders?.count?.content === '$1',
-    `${locale} computed-style match count must preserve its substitution placeholder.`);
+    `${locale} result-filter match count must preserve its substitution placeholder.`);
 }
 
 const firstPartyTextFiles = allFiles.filter(file => {
@@ -251,8 +251,10 @@ const updateHtml = await readFile(path.join(root, 'update/update.html'), 'utf8')
 const updateSource = await readFile(path.join(root, 'update/update.js'), 'utf8');
 const modalSource = await readFile(path.join(root, 'scripts/showModalWithCSSData.js'), 'utf8');
 const displayStylesSource = await readFile(path.join(root, 'scripts/displayStyles.js'), 'utf8');
+const declaredStylesSource = await readFile(path.join(root, 'scripts/getDeclaredStyles.js'), 'utf8');
 const computedStylesSource = await readFile(path.join(root, 'scripts/getComputedStyles.js'), 'utf8');
 const mediaRulesSource = await readFile(path.join(root, 'scripts/getMediaRules.js'), 'utf8');
+const keyframesRulesSource = await readFile(path.join(root, 'scripts/getKeyframesRules.js'), 'utf8');
 check(!/window\.close\s*\(/.test(popupSource),
   'The popup must not close its own tab after starting the picker.');
 check(!/activateTab\s*\(/.test(popupSource),
@@ -263,11 +265,16 @@ check(/id="targetContextValue"/.test(popupHtml) && /id="useActivePageBtn"/.test(
   'The popup must expose and reset its inspection target.');
 check(/id="removeRuleBtn"/.test(popupHtml) && /remove:\s*true/.test(popupSource),
   'The popup must offer explicit CSS preview removal.');
-check(/id="styleFilterInput"/.test(popupHtml) && /filterComputedStyles/.test(popupSource),
-  'The popup must expose computed-style filtering.');
-check(/css-insight-computed-styles/.test(computedStylesSource) &&
-  /isComputedStylesResult/.test(displayStylesSource),
-  'Computed styles must use the structured filter transport.');
+check(/id="styleFilterInput"/.test(popupHtml) && /filterStylesResult/.test(popupSource),
+  'The popup must expose filtering for structured CSS results.');
+check([
+  declaredStylesSource,
+  computedStylesSource,
+  mediaRulesSource,
+  keyframesRulesSource
+].every(source => /css-insight-filterable-styles/.test(source)) &&
+  /isFilterableStylesResult/.test(displayStylesSource),
+  'Every CSS collector must use the shared structured filter transport.');
 check(/window\.matchMedia/.test(mediaRulesSource) && /mediadoesnotmatch/.test(mediaRulesSource),
   'Media-rule output must report the current condition status.');
 check(/RUNTIME_CHANGED_ERROR_CODE/.test(popupSource) && /t\('runtimechanged'\)/.test(popupSource),

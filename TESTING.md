@@ -10,7 +10,7 @@ Run `npm run build`, then load `dist/firefox/manifest.json` through `about:debug
 
 ## Localization
 
-- Run `npm run check` and confirm all 82 message keys are present in `de`, `en`, `es`, `ja`, `pt_BR` and `uk`.
+- Run `npm run check` and confirm all 83 message keys are present in `de`, `en`, `es`, `ja`, `pt_BR` and `uk`.
 - Switch the browser UI through German, Spanish, Japanese, Brazilian Portuguese and Ukrainian, restarting the browser when prompted. Confirm the extension name, description, popup controls, picker tooltips, status messages and on-page details dialog use the selected locale.
 - In every locale, trigger an invalid selector, a protected-page message, a picker timeout and an unavailable iframe or shadow-root target. Confirm no empty labels or raw localization keys appear.
 - Confirm long German and Portuguese labels wrap vertically without changing the desktop popup width.
@@ -52,8 +52,12 @@ Run `npm run build`, then load `dist/firefox/manifest.json` through `about:debug
 - Retrieve a rule declared inside a page `<style>` element. Confirm its source is labeled as inline instead of `null`.
 - Apply a CSS Insight preview, retrieve the same rule and confirm its source is labeled **CSS Insight preview**.
 - Retrieve computed styles for a valid selector.
-- Filter Computed Styles by a property name such as `grid`, then by a resolved value such as `rgb`. Confirm Copy, Save and View More Details use only the visible filtered result.
-- Enter a filter with no matches and confirm a localized empty result appears. Press Escape and confirm the complete computed result returns without another page query.
+- Filter Computed Styles by a property name such as `grid`, then by a resolved value such as `rgb`.
+- Filter Declared Styles by a selector, declaration or stylesheet source; Media Rules by a media condition or declaration; and Keyframes by an animation name or declaration.
+- Confirm each matching rule remains a complete CSS block with every enclosing `@layer`, `@media`, `@supports`, `@container` or `@scope` context.
+- Trigger an inaccessible stylesheet notice, apply a filter and confirm the notice remains visible even when no rule matches.
+- Confirm Copy, Save and View More Details use only the visible filtered output for all four result types.
+- Enter a filter with no matches and confirm a localized empty result appears. Press Escape and confirm the complete result returns without another page query.
 - Enter an invalid selector in both Declared Styles and Computed Styles. Confirm the localized validation result is shown without breaking the popup.
 - Retrieve media rules and keyframes on a page that contains them.
 - Resize the test viewport across a media-query boundary and retrieve Media Rules again. Confirm each result reports whether its media conditions match the current frame environment.
@@ -103,8 +107,8 @@ Run `npm run build`, then load `dist/firefox/manifest.json` through `about:debug
 - Run `npm run check` and confirm all automated tests pass.
 - On Firefox Android, reload a page while requesting Media Rules or Keyframes. Confirm the operation either finishes in the original document or shows the localized retry message, never a result from the replacement document.
 - Select an element inside an iframe and open View More Details. Confirm the modal still opens in the top frame.
-- Update from `1.23.4` to `1.23.5` and confirm no release-notes tab opens. Simulate a minor-version update and confirm the localized release-notes page opens once.
+- Update from `1.23.5` to `1.24.0` and confirm the localized release-notes page opens once and does not reopen after restart.
 - If `web-ext` is installed, run `web-ext lint --warnings-as-errors` before submitting to AMO.
-- Run `unzip -t dist/CSS-Insight-firefox-1.23.5-amo.zip`.
-- Run `unzip -t dist/CSS-Insight-firefox-1.23.5-source.zip` and confirm `manifest.json`, `package.json`, `scripts/` and `tests/` are at the ZIP root.
+- Run `unzip -t dist/CSS-Insight-firefox-1.24.0-amo.zip`.
+- Run `unzip -t dist/CSS-Insight-firefox-1.24.0-source.zip` and confirm `manifest.json`, `package.json`, `scripts/` and `tests/` are at the ZIP root.
 - Confirm the AMO archive contains no tests, build tools, `.gitignore`, `metadata.json`, or obsolete scripts.

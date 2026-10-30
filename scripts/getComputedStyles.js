@@ -41,9 +41,13 @@ function getComputedStyles(request) {
 
   if (request?.structured === true) {
     return {
-      type: 'css-insight-computed-styles',
+      type: 'css-insight-filterable-styles',
+      kind: 'computed',
       header,
-      properties
+      entries: properties.map(property => ({
+        text: `${property.name}: ${property.value};`,
+        searchText: `${property.name}\n${property.value}`
+      }))
     };
   }
 

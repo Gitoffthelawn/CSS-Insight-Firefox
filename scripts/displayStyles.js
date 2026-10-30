@@ -1,32 +1,50 @@
-export const COMPUTED_STYLES_RESULT = 'css-insight-computed-styles';
+export const FILTERABLE_STYLES_RESULT = 'css-insight-filterable-styles';
 
-export function isComputedStylesResult(value) {
-  return value?.type === COMPUTED_STYLES_RESULT &&
-    typeof value.header === 'string' &&
-    Array.isArray(value.properties);
+function normalizeEntries(value) {
+  if (!Array.isArray(value)) return [];
+
+  return value.filter(entry =>
+    typeof entry?.text === 'string' && entry.text.trim()
+  );
 }
 
-export function filterComputedStyles(result, query = '', noMatchesMessage = '') {
+function normalizeNotices(value) {
+  if (!Array.isArray(value)) return [];
+
+  return value.filter(notice => typeof notice === 'string' && notice.trim());
+}
+
+export function isFilterableStylesResult(value) {
+  return value?.type === FILTERABLE_STYLES_RESULT &&
+    typeof value.kind === 'string' &&
+    normalizeEntries(value.entries).length > 0;
+}
+
+export function filterStylesResult(result, query = '', noMatchesMessage = '') {
   const normalizedQuery = String(query).trim().toLowerCase();
-  const properties = result.properties.filter(property =>
-    typeof property?.name === 'string' && typeof property?.value === 'string'
-  );
+  const entries = normalizeEntries(result.entries);
+  const notices = normalizeNotices(result.notices);
   const matches = normalizedQuery
-    ? properties.filter(property =>
-      property.name.toLowerCase().includes(normalizedQuery) ||
-      property.value.toLowerCase().includes(normalizedQuery)
+    ? entries.filter(entry =>
+      String(entry.searchText || entry.text).toLowerCase().includes(normalizedQuery)
     )
-    : properties;
-  const body = matches.length
-    ? matches.map(property => `${property.name}: ${property.value};`).join('\n')
-    : normalizedQuery
-      ? `/* ${String(noMatchesMessage).replace(/\*\//g, '* /')} */`
-      : '';
+    : entries;
+  const parts = [];
+  const header = typeof result.header === 'string' ? result.header.trim() : '';
+
+  if (header) parts.push(header);
+  parts.push(...notices.map(notice => notice.trim()));
+
+  if (matches.length) {
+    parts.push(...matches.map(entry => entry.text.trim()));
+  } else if (normalizedQuery) {
+    parts.push(`/* ${String(noMatchesMessage).replace(/\*\//g, '* /')} */`);
+  }
 
   return {
     matchCount: matches.length,
-    text: body ? `${result.header}\n\n${body}`.trim() : result.header.trim(),
-    totalCount: properties.length
+    text: parts.join('\n\n').trim(),
+    totalCount: entries.length
   };
 }
 

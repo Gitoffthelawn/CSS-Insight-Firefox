@@ -25,6 +25,15 @@ test('offers explicit CSS preview removal in the selected root', () => {
   assert.match(popupSource, /stylesremoved/);
 });
 
+test('filters every structured CSS result without another page query', () => {
+  assert.match(popupHtml, /id="styleFilterInput"/);
+  assert.match(popupSource, /filterStylesResult/);
+  assert.match(popupSource, /getDeclaredStyles\.js'[\s\S]*structured:\s*true/);
+  assert.match(popupSource, /getComputedStyles\.js'[\s\S]*structured:\s*true/);
+  assert.match(popupSource, /getMediaRules\.js',\s*\{\s*structured:\s*true\s*\}/);
+  assert.match(popupSource, /getKeyframesRules\.js',\s*\{\s*structured:\s*true\s*\}/);
+});
+
 test('uses browser locale metadata in extension documents', () => {
   assert.match(i18nSource, /@@ui_locale/);
   assert.match(i18nSource, /@@bidi_dir/);
